@@ -1,0 +1,161 @@
+body{
+    margin: auto;
+}
+
+.topdiv{
+width:100%;
+height:fit-content;
+background-color:DarkRed;
+text-align:right;
+}
+
+#linktxt{
+text-decoration: none;
+color: White;
+}
+#container{
+width: 80%;
+height: 500px;
+border-radius: 50px;
+position: absolute;
+top: 150px;
+right: 150px;
+}
+#image{
+    margin-top: 0px;
+    
+    width: 200;
+    height: 100px;
+}
+#caDiv{
+float: right;
+width: 50%;
+height: 500px;
+margin-left: 380px;
+border-radius: 40px;
+background: rgb(45, 133, 33);
+box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+ rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+}
+
+#signuptxt{
+    width: 240px;
+    height: 40px;
+    margin-left: 50px;
+    margin-top: 40px;
+    font-family:  Times, serif;
+    font-size: 25px;
+    color: antiquewhite;
+    text-shadow: 0px 0px 15px rgb(3, 3, 3);
+}
+
+#caForm{
+
+   margin: 30px 0px 10px 30px;
+   padding-right: 40px;
+}
+
+#name{
+    width: 45%;
+    height: 30px;
+    margin-right: 6px;
+    margin-left: 5px;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 0px 5px 10px;
+}
+
+#surname{
+    width: 45%;
+    height: 30px;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 0px 5px 10px;
+}
+
+#user{
+    width: 94%;
+    height: 30px;
+    margin: 20px 15px 0px 5px ;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+
+
+#password{
+    width: 94%;
+    height: 30px;
+    margin: 20px 15px 0px 5px ;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+
+#passwordr{
+    width: 94%;
+    height: 30px;
+    margin: 20px 15px 0px 5px ;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+#contact{
+    width: 94%;
+    height: 30px;
+    margin: 20px 15px 0px 5px ;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+#signin{
+	margin-left: 299px;
+	position:relative;
+	top:-38px;
+}
+#signin,#back{
+    width: 31%;
+    height:40px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+            }
+
+            #signin:hover,#back:hover {
+                background-color: #28c936;
+                box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+                color: #fff;
+                transform: translateY(-7px);
+              }
+              
+              #signin:active, #back:active {
+                transform: translateY(-1px);
+              }
+#back{
+	margin-top: 20px;
+	 margin-left: 10px;
+}
+#image{
+
+    width: 50%;
+    height: 500px;
+    position: absolute;
+    top: 100px;
+    left: 80px;
+    border-radius: 180px;
+}
+a{
+	text-decoration:none;
+	color:black;
+}

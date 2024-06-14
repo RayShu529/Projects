@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".manageFirstAids.manageFaid">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="50dp">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/backbtn"></ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="Manage First Aids"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="27dp" />
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/showadd"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:background="@drawable/buttondesign"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="ADD FIRST AID"
+                    android:textSize="20dp" />
+                <Button
+                    android:id="@+id/showdel"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/buttondesign"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="archive First Aid"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+                <LinearLayout
+                    android:id="@+id/addL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="50dp"
+                    android:visibility="gone"
+                    >
+
+                    <ImageView
+                        android:id="@+id/addPIC"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@drawable/addnew"
+                        android:layout_gravity="center"
+                        android:src="@drawable/addnew"/>
+
+                    <EditText
+                        android:id="@+id/addN"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="First AID Name"
+                        android:inputType="text"
+                        android:background="@drawable/edittextdesign"
+                        android:padding="12dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="10dp"></EditText>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/addP"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            android:hint="PASSWORD"
+                            android:background="@drawable/edittextdesign"
+                            android:paddingBottom="2dp"
+                            android:paddingTop="2dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:layout_marginBottom="10dp"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <Button
+                        android:id="@+id/addB"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bdnames"
+                        android:backgroundTint="@color/lgreen"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="ADD"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/delL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="50dp"
+                    android:visibility="gone"
+                    >
+                    <TextView
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="FIRST AID LIST"
+                        android:textColor="@color/white"
+                        android:textSize="12dp"
+                        android:layout_marginBottom="3dp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/delN1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:background="@drawable/edittextdesign"
+                        android:padding="10dp"
+                        android:text="No First Aid available"
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"/>
+                    <Spinner
+                        android:id="@+id/delN"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:background="@drawable/edittextdesign"
+                        android:padding="10dp"
+
+                        android:fontFamily="sans-serif-medium"
+                        android:layout_marginBottom="10dp"/>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        >
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/delP"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="PASSWORD"
+                            android:inputType="textPassword"
+                            android:textColor="@color/black"
+                            android:background="@drawable/edittextdesign"
+                            android:paddingBottom="2dp"
+                            android:paddingTop="2dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:layout_marginBottom="10dp"
+                            />
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <Button
+                        android:id="@+id/delB"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bdnames"
+                        android:backgroundTint="@color/lgreen"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Archive"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77A3A3A3" />
+
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loadingProgressBar"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:text="Loading" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

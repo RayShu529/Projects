@@ -1,0 +1,35 @@
+from django.urls import path
+from loginRegister import views as logviews
+from . import views
+from userPage import views as userViews
+urlpatterns = [
+    path('../Login/', logviews.loginform,name='login'),
+    path('Homepage/', views.teacherPage,name='teacherpage'),
+    path('../User/Homepage/', userViews.mainpage,name='mainPage'),
+    path('Logout/', views.teacherLogout,name='out'),
+    path('TeacherProfile/', views.teacherProfile,name='teacherprofile'),
+    path('Lessons/', views.getlesson,name='getlesson'),
+    path('Quiz/', views.getquiz,name='getquiz'), 
+    path('Assessment/', views.getass,name='getass'), 
+    path('Quiz/saveQuiz/', views.savequiz,name='savequiz'), 
+    path('Quiz/saveAssessment/', views.saveass,name='saveass'), 
+    path('Quiz/editQuiz/', views.editquiz,name='editquiz'), 
+    path('Assessment/editAssessment/', views.editass,name='editass'), 
+    path('Quiz/editQuiz/save/', views.saveeditquiz,name='saveeditquiz'), 
+    path('Assessment/editAssessment/save/', views.saveeditass,name='saveeditass'), 
+    path('Quiz/editQuiz/delete/', views.deleteeditquiz,name='deleteeditquiz'), 
+    path('Assessment/editAssessment/delete/', views.deleteeditass,name='deleteeditass'), 
+    path('Lessons/savelesson/', views.savelesson,name='savelesson'),
+    path('Lessons/savelesson/lessoname/', views.lessoname,name='lessoname'),
+    path('Lessons/editlesson/', views.editlesson,name='editlesson'),
+    path('Lessons/editlesson/getlesson/', views.editgetlesson,name='editgetlesson'),
+    path('Lessons/editlesson/deletelesson/', views.editdeletelesson,name='editdeletelesson'),
+    path('Users/', views.getuser,name='getuser'),
+    path('TeacherProfile/changepicture/', userViews.changepicture,name='changepicture'),
+    path('TeacherProfile/changepass/', userViews.changepassword,name='changepassword'),
+    path('TeacherProfile/changeemail/', userViews.changeemail,name='changeemail'),
+    path('CheckUser/', views.checkUser,name='checkUser'),
+    path('DeleteUser/', views.deleteUser,name='deleteUser'),
+    path('ActivityLog/', views.activityLog,name='activitylog'),
+    path('ActivityLog/sort/', views.sortDate,name='sort'),
+]

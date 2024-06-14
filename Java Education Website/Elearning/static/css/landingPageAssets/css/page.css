@@ -1,0 +1,81 @@
+.wrapper .navbar {
+    z-index: 2;
+  }
+  
+  .card {
+    background: #1f2251;
+    border: 0;
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .card .card-title {
+    margin-bottom: .75rem;
+  }
+  
+  .card .card-body {
+    padding: 15px;
+  }
+  
+  .card-stats {
+    margin-bottom: 0;
+  }
+  
+  .card-stats.upper {
+    box-shadow: 2px 7px 11px rgba(0, 0, 0, 0.4);
+    transform: translate(-20px, -25px);
+    position: absolute;
+    padding: 10px;
+    z-index: 2;
+    min-width: 260px;
+  }
+  
+  .card-stats .card-body .numbers {
+    text-align: right;
+    font-size: 2em;
+  }
+  
+  .card-stats .card-body .numbers p {
+    margin-bottom: 0;
+  }
+  
+  
+  
+  .card-stats .card-footer {
+    padding: 0px 15px 15px;
+  }
+  
+  
+  .card-stats .icon-big {
+    font-size: 3em;
+    min-height: 64px;
+  }
+  
+  
+  @media screen and (max-width: 991px) {
+    .card.card-stats.upper {
+      position: relative;
+      transform: translate(0);
+    }
+  }
+  
+  
+  
+  
+  /* Landing Page*/
+  #logo{
+    height: 50px;
+  
+  }
+  #im1{
+   object-fit: contain;
+  width: 40rem;
+  
+  }
+  

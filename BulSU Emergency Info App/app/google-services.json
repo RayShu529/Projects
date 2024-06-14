@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "119461651409",
+    "project_id": "androidevacapp",
+    "storage_bucket": "androidevacapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119461651409:android:c76c166d6e342b3cc876f0",
+        "android_client_info": {
+          "package_name": "com.example.capstone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119461651409-8k74j5ihugrpi4kb1553ocm60t3qjjfk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119461651409-8k74j5ihugrpi4kb1553ocm60t3qjjfk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

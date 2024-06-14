@@ -1,0 +1,1272 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/logout.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/NavStyle.css' %}" />
+    <title>Codely</title>
+    {% if alert_message %} 
+    <script>
+        alert("{{ alert_message }}");
+    </script>
+    {% endif %}
+    <style>
+        textarea {
+            line-height: 1.5;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            var scrollContainer = document.getElementById("navnav");
+                window.addEventListener("scroll", function() {
+                    if (window.scrollY <= 65) {
+                        scrollContainer.classList.remove("color");
+                        $('#LOGO').css('color','white');
+                        $('#imgLOGO').attr('src',"{% static 'images/logo1.png' %}");
+                        $('#alis').attr('src',"{% static 'images/logout1.png' %}");
+                        $('#usir').attr('src',"{% static 'images/user1.png' %}");
+                        $('#bahay').attr('src',"{% static 'images/home1.png' %}");
+                    } else {
+                            scrollContainer.classList.add("color");
+                            $('#LOGO').css('color','white');
+                            $('#imgLOGO').attr('src',"{% static 'images/logo1.png' %}");
+                            $('#alis').attr('src',"{% static 'images/logout1.png' %}");
+                            $('#usir').attr('src',"{% static 'images/user1.png' %}");
+                            $('#bahay').attr('src',"{% static 'images/home1.png' %}");
+                    }
+                });
+            var currentURL = window.location.href;
+            if (currentURL.includes("lesson")) {
+                lessons();  
+            
+                
+            }
+            else if (currentURL.includes("quiz")) {
+                quiz();  
+                
+            }
+            else if (currentURL.includes("assess")) {
+                assessment();  
+                
+            }
+            else if (currentURL.includes("user")) {
+                users();  
+                
+            }
+            else if (currentURL.includes("act")) {
+                activityLog();  
+                
+            }
+        });
+        function lessons(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?lesson";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('LESSONS');
+            $.get("/E-Learning/Teacher/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                var button =$('<button style="padding: 5px 10px;" class="addLesson" onclick = "showlesson()">Add Lesson</button>');
+                $('#lesson-list-container').append(button);
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="editshowlesson(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);      
+                }    
+                
+			});
+            $('#divLessons').addClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').removeClass("click");
+            $('#divUser').removeClass("click");
+            $('#divAct').removeClass("click");
+            dashboarDesign("lessons");
+        }
+        function namecheck(){
+            var lessoname = $('#name').val().trim();
+            if(lessoname==""){
+                $('#namecheck').text("");
+            }
+            else{
+                $.get("/E-Learning/Teacher/Lessons/savelesson/lessoname/?lessoname="+lessoname, function(response){
+                    if(response.result=="true"){
+                        $('#namecheck').text("Lesson name available");
+                    }
+                    else{
+                        $('#namecheck').text(response.result);
+                    }
+            });
+            }
+            
+        }
+        function showlesson(){
+            $('#lesson-list-container').empty();  
+            var form = $('#lessonform').clone();
+            
+            $('#title').text('Add Lesson');
+            $('#lesson-list-container').append(form); 
+            form.show();  
+            $('textarea').css('height','200px');
+        }
+        function editshowlesson(lessonName){
+            var form = $('#editlessonform').clone();
+            $('#lesson-list-container').empty();  
+            $('#title').text('Edit Lesson');
+            $('#lesson-list-container').append(form); 
+            form.show();
+            $.get("/E-Learning/Teacher/Lessons/editlesson/getlesson/?lessoname="+lessonName, function(response){
+                if(response.result=="false"){
+                    alert(lessonName+" not available.")
+                    lessons();
+                }
+                else{
+                    var lessonData = JSON.parse(response.result)[0].fields;
+                    $('#oldname').val(lessonData.name);
+                    $('#editname').val(lessonData.name);
+                    $('#editinfo').val(lessonData.info);
+                    $('#editexample').val(lessonData.example);
+                    $('textarea').each(function() {
+                    var $textarea = $(this);
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                    });
+                }
+            });
+        }
+        function editsavelesson(){
+            var name = $('#editname').val().trim();
+            var oldname = $('#oldname').val();
+            var info = $('#editinfo').val().trim();
+            var example = $('#editexample').val().trim();
+            var videoInput = $('#editvideo')[0];
+            var fileInput = $('#editfile')[0];
+            if(name==""||info==""){
+                alert("To save a lesson, it must have a name and info")
+            }
+            else {
+                var Response = confirm("Are you sure you want to edit lesson "+name+"?");
+                if(Response==true){
+                    var formData = new FormData();
+                    if (fileInput.files.length > 0) {
+                            file = fileInput.files[0];
+                            formData.append('file', file);
+                        }
+                    if (videoInput.files.length > 0) {
+                            video = videoInput.files[0];
+                            formData.append('video', video);
+                        }
+                formData.append('name', name);
+                formData.append('oldname', oldname);
+                formData.append('info', info);
+                formData.append('example', example);
+                
+                $.ajax({
+                    url: '/E-Learning/Teacher/Lessons/editlesson/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if(response.result=="true"){
+                            alert("Lesson updated successfully");
+                            lessons();
+                        }
+                        else{
+                            alert(response.result);
+                        }
+                    },
+                    error: function(error) {
+            
+                    }
+                });
+                }
+            }
+
+        }
+        function editdeletelesson(){
+            var name = $('#editname').val().trim();
+            var Response = confirm("Are you sure you want to delete lesson "+name+"?");
+            if(Response==true){
+                $.get("/E-Learning/Teacher/Lessons/editlesson/deletelesson/?lessoname="+name, function(response){
+                if(response.result=="true"){
+                    alert("Lesson delete successfuly");
+                    lessons();
+                }
+            });
+            }
+
+        }
+        function savelesson(event){
+             event.preventDefault();
+            var name = $('#name').val().trim();
+            var info = $('#info').val().trim();
+            var example = $('#example').val().trim();
+            var videoInput = $('#video')[0];
+            var fileInput = $('#file')[0];
+            var check = $('#namecheck').text();
+            if(name==""||info==""){
+                alert("To save a lesson, it must have a name and info ")
+            }
+            else if(check!="Lesson name available"){
+                alert(check);
+            }
+            else {
+                var Response = confirm("Are you sure you want to save a new lesson?");
+                if(Response==true){
+                    var formData = new FormData();
+                    if (fileInput.files.length > 0) {
+                            file = fileInput.files[0];
+                            formData.append('file', file);
+                        }
+                    if (videoInput.files.length > 0) {
+                            video = videoInput.files[0];
+                            formData.append('video', video);
+                        }
+                formData.append('name', name);
+                formData.append('info', info);
+                formData.append('example', example);
+                
+                $.ajax({
+                    url: '/E-Learning/Teacher/Lessons/savelesson/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if(response.result=="true"){
+                            if(event.target.id=="lessonSave"){
+                                alert("Lesson saved successfully");
+                                lessons();
+                            }
+                            else if(event.target.id=="lessonSaveAnother"){
+                                alert("Lesson saved successfully");
+                                showlesson();
+                            }
+                        }
+                        else{
+                            alert(response.result);
+                        }
+                    },
+                    error: function(error) {
+            
+                    }
+                });
+                }
+            }
+        }
+        function users(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?user";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('USERS');
+            $.get("/E-Learning/Teacher/Users/", function(response){
+                $('#lesson-list-container').empty(); 
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No Users.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, UserName) {
+                        if(response.certified[index])
+                        {
+                            list.append($('<div onclick="checkUser(\'' + UserName + '\')"></div>').html(UserName+'<img src="{% static "images/logo.png" %}" width="30" height="30"/> ' ));
+                        }
+                        else{
+                            list.append($('<div onclick="checkUser(\'' + UserName + '\')"></div>').text(UserName));
+                        }
+                        
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '20%');
+                    items.css('height', '40px');
+                    items.css({
+                                'height': '40px',
+                                'display': 'flex',
+                                'align-items': 'center',
+                                'justify-content': 'center'
+                            });
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);     
+                }
+                
+			});
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').removeClass("click");
+            $('#divUser').addClass("click");
+            $('#divAct').removeClass("click");
+            dashboarDesign("user");
+        }
+        function checkUser(user){
+            $('#lesson-list-container').empty();  
+            var div = $('#userInfo').clone();
+            
+            $('#title').text(user);
+            $('#lesson-list-container').append(div); 
+            div.show();
+            div.css("display","flex");
+            $.get("/E-Learning/Teacher/CheckUser/?username="+user, function(response){
+                if(response.pic==""){
+                    $("#userPic").attr("src","{% static 'images/user1.png' %}");
+                    
+                }
+                else{
+                    $("#userPic").attr("src",response.pic);
+                }
+                if(response.certified){
+                $('#title').append('<img src="{% static "images/logo.png" %}" width="50" height="50"/>');
+                $('#userName').html(response.username+'<img src="{% static "images/logo.png" %}" width="30" height="30"/> ');
+                }
+                else{
+                    
+                    $('#userName').text(response.username)
+                }
+                $('#userFname').text(response.fname);
+                $('#userLname').text(response.lname);
+                $('#userEmail').text(response.email);
+                
+                
+                var list = $('<div></div>');
+                    $.each(response.quizScores, function(index, quiz) {
+                        if(quiz<3){
+                            list.append($('<div class = "fail"></div>').text(response.lessonList[index]+": "+quiz+"/5"));
+                        }
+                        else{
+                            list.append($('<div class = "pass"></div>').text(response.lessonList[index]+": "+quiz+"/5"));
+                        }
+                        
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#Qscore').append(list);   
+                var list = $('<div></div>');
+                    $.each(response.assScores, function(index, ass) {
+                        if(ass<3){
+                            list.append($('<div class="fail"></div>').text(response.lessonList[index]+": "+ass+"/5"));
+                        }
+                        else{
+                            list.append($('<div class="pass"></div>').text(response.lessonList[index]+": "+ass+"/5"));
+                        }
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#Ascore').append(list);  
+                  
+            });
+        }
+        function userDelete(){
+            var user = $('#title').text();
+            var RUSURE = confirm("Are you sure you want to delete "+user+"?");
+            if(RUSURE==true){
+                var password = prompt("Password");
+                $.get("/E-Learning/Teacher/DeleteUser/?username="+user+"&password="+password, function(response){
+                if(response.result=="true"){
+                    alert("User deleted successfully");
+                    users();
+                }
+                else{
+                    alert(response.result);
+                }
+            });
+            }
+        }
+        function quiz(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?quiz";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('QUIZZES');
+            $.get("/E-Learning/Teacher/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="quizlesson(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);        
+                }
+            });
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').addClass("click");
+            $('#divAss').removeClass("click");
+            $('#divUser').removeClass("click");
+            $('#divAct').removeClass("click");
+            dashboarDesign("quiz");
+        }
+        function quizlesson(lessonName){
+            $('#title').text(lessonName);
+            $.get("/E-Learning/Teacher/Quiz/?lessonName="+lessonName, function(response){
+                $('#lesson-list-container').empty();
+                var divdiv = $('<div class="qbtn"></div>');
+                var button1 =$('<button style="padding: 5px 10px;" onclick = "addquizlesson(\'' + lessonName + '\')">Add Question</button>');
+                var button2 =$('<button style="padding: 5px 10px;" onclick = "quiz()">Back</button>');
+                divdiv.append(button1,button2);  
+                $('#lesson-list-container').append(divdiv);
+                if (response.question.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No questions available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var paragraph =$('<p style = "text-align:right;"></p>').text(response.question.length+' question(s)');
+                    $('#lesson-list-container').append(paragraph); 
+                    var list = $('<div></div>');
+                        $.each(response.question, function(index, question) {
+                            var div = $('<div class="cont"></div>');
+                            var container = $('<div class="question-container"></div>');
+
+                            var lines = question.split('\n').length;
+                            var listItem = $('<textarea readonly class="question-textarea"></textarea>').val(question).attr('rows', lines);
+                            
+                            // Create a container for buttons
+                            var buttonsContainer = $('<div class="buttons-container"></div>');
+
+                            // Create the Edit button
+                            var editB = $('<button class="edit-button">Edit</button>');
+                            editB.on('click', function() {
+                                editquizlesson(question);
+                            });
+
+                            // Create the Delete button
+                            var delB = $('<button class="delete-button">Delete</button>');
+                            delB.on('click', function() {
+                                deletequizlesson(question);
+                            });
+
+                            // Append buttons to the buttons container
+                            buttonsContainer.append(editB, delB);
+
+                            // Append elements to the main container
+                            container.append(listItem, buttonsContainer);
+                            
+                            // Create the answer item
+                            var answerItem = $('<div class="answer-item"></div>');
+                            if (response.answer.length > index) {
+                                answerItem.text('Answer: ' + response.answer[index]);
+                            }
+                            div.append(container);
+                            div.append(answerItem);
+                            list.append(div);
+                             
+                        });
+
+                        $('#lesson-list-container').append(list);  
+                }
+            });
+            
+        }
+        function addquizlesson(lessonName){
+            $('#lesson-list-container').empty();  
+            var form = $('#addquizlesson').clone();
+            
+            $('#lesson-list-container').append(form);
+            var name = $('<span>Quiz question for: </span><p id="addquizName">'+lessonName+'</p>');
+            form.prepend(name);
+            var div = $('<div class="qbtn" ></div>');
+            var button = $('<input style="padding: 5px 10px;" type="button" onclick="quizlesson(\'' + lessonName + '\')" value="Back">');
+            div.append(button);
+            form.find('textarea').css('height','200px');
+            form.append(div);
+            form.show();
+        }
+        function saveaddQuiz(event) {
+            event.preventDefault();
+            var name = $('#addquizName').text();
+            var question = $('#addquizQuestion').val().trim();
+            var answer = $('#addquizAnswer').val().trim();
+
+            if (question === "" || answer === "") {
+                alert("To add a question, it must have a question and answer");
+            } else {
+                var RUSURE = confirm("Are you sure you want to save this question?");
+                if (RUSURE === true) {
+                $.post("/E-Learning/Teacher/Quiz/saveQuiz/", {
+                lessonName: name,
+                question: question,
+                answer: answer
+                }, function(response) {
+                if (response.result === "true") {
+                    if(event.target.id=="saveAdd"||event.target.id=="addquizlesson"){
+                        alert("Quiz question for " + name + " saved successfully");
+                        quizlesson(name);
+                    }
+                    else if(event.target.id=="saveAnother"){
+                        alert("Quiz question for " + name + " saved successfully");
+                        addquizlesson(name);
+                    }
+                } else {
+                    alert(response.result);
+                }
+                });
+                }
+            }
+}
+        function editquizlesson(question){
+            var form = $('#editquizlesson').clone();
+            $('#lesson-list-container').empty();  
+            $('#lesson-list-container').append(form);
+            var lessonName = $('#title').text();
+            var name = $('<span>Quiz question for: </span><p id="editquizName">'+lessonName+'</p>');
+            form.prepend(name);
+            var div = $('<div class="qbtn"></div>');
+            var button = $('<input style="padding: 5px 10px;" type="button" onclick="quizlesson(\'' + lessonName + '\')" value="Back">');
+            div.append(button);
+            form.append(div);
+            $.post("/E-Learning/Teacher/Quiz/editQuiz/", { 
+                question: question 
+            }, function(response) {
+                $('#editquizQuestion').val(response.question);
+                $('#oldquizQuestion').val(response.question);
+                    var $textarea = $('#editquizQuestion');
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                $('#editquizAnswer').val(response.answer);
+                }, "json");
+            form.show();
+            
+        }
+        function deletequizlesson(question){
+            var lessonName = $('#title').text();
+           
+            var RUSURE = confirm("Are you sure you want to delete this question?");
+            if(RUSURE==true){
+                $.post("/E-Learning/Teacher/Quiz/editQuiz/delete/", { question: question }, function(response) {
+                alert(response.result);
+                quizlesson(lessonName);
+                }, "json");
+            }
+        }
+        function saveeditQuiz(){
+            event.preventDefault();
+            var name = $('#title').text();
+            var oldquestion = $('#oldquizQuestion').val();
+            var question = $('#editquizQuestion').val().trim();
+            var answer = $('#editquizAnswer').val().trim();
+            if(question==""||answer==""){
+                alert("To add a question, it must have a question and answer");
+            }
+            else{
+                var RUSURE = confirm("Are you sure you want to edit this question?");
+                if(RUSURE==true){
+                    $.post("/E-Learning/Teacher/Quiz/editQuiz/save/", {
+                    question: question,
+                    answer: answer,
+                    oldquestion: oldquestion,
+                    }, function(response) {
+                    if (response.result == "true") {
+                    alert("Quiz question for " + name + " edited successfully");
+                    quizlesson(name);
+                    } else {
+                    alert(response.result);
+                        }
+                }, "json");
+                }
+            }
+        }
+        function assessment(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?assess";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('ASSESSMENTS');
+            $.get("/E-Learning/Teacher/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="assessmentlesson(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);        
+                }
+            });
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').addClass("click");
+            $('#divUser').removeClass("click");
+            $('#divAct').removeClass("click");
+            dashboarDesign("ass");
+        }
+        function assessmentlesson(lessonName){
+            $('#title').text(lessonName);
+            $.get("/E-Learning/Teacher/Assessment/?lessonName="+lessonName, function(response){
+                $('#lesson-list-container').empty();
+                var divdiv = $('<div class="qbtn"></div>');
+                var button1 =$('<button style="padding: 5px 10px;" onclick = "addasslesson(\'' + lessonName + '\')">Add Question</button>');
+                var button2 =$('<button style="padding: 5px 10px;" onclick = "assessment()">Back</button>');
+                divdiv.append(button1,button2);  
+                $('#lesson-list-container').append(divdiv);  
+                if (response.question.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No questions available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var paragraph =$('<p style = "text-align:right;"></p>').text(response.question.length+' question(s)');
+                    $('#lesson-list-container').append(paragraph); 
+                    var list = $('<div></div>');
+                        $.each(response.question, function(index, question) {
+                            var div = $('<div class="cont"></div>');
+                            var container = $('<div class="question-container"></div>');
+
+                            var lines = question.split('\n').length;
+                            var listItem = $('<textarea readonly class="question-textarea"></textarea>').val(question).attr('rows', lines);
+                            
+                            // Create a container for buttons
+                            var buttonsContainer = $('<div class="buttons-container"></div>');
+
+                            // Create the Edit button
+                            var editB = $('<button class="edit-button">Edit</button>');
+                            editB.on('click', function() {
+                                editasslesson(question);
+                            });
+
+                            // Create the Delete button
+                            var delB = $('<button class="delete-button">Delete</button>');
+                            delB.on('click', function() {
+                                deleteasslesson(question);
+                            });
+
+                            // Append buttons to the buttons container
+                            buttonsContainer.append(editB, delB);
+
+                            // Append elements to the main container
+                            container.append(listItem, buttonsContainer);
+                            
+                            // Create the answer item
+                            var answerItem = $('<div class="answer-item"></div>');
+                            if (response.answer.length > index) {
+                                answerItem.text('Answer: ' + response.answer[index]);
+                            }
+                            div.append(container);
+                            div.append(answerItem);
+                            list.append(div);
+                             
+                        });
+
+                        $('#lesson-list-container').append(list);      
+                }
+            });
+        }
+        function addasslesson(lessonName){
+            $('#lesson-list-container').empty();  
+            var form = $('#addasslesson').clone();
+            $('#lesson-list-container').append(form);
+            var name = $('<span>Assessment question for: </span><p id="addassName">'+lessonName+'</p>');
+            form.prepend(name);
+            var button = $('<input style="padding: 5px 10px;" type="button" onclick="assessmentlesson(\'' + lessonName + '\')" value="Back">');
+            var div = $('<div class="qbtn"></div>');
+            div.append(button);
+            form.find('textarea').css('height','200px');
+            form.append(div);
+            form.show();
+        }
+        function saveaddAss(event) {
+            event.preventDefault();
+            var name = $('#addassName').text();
+            var question = $('#addassQuestion').val().trim();
+            var answer = $('#addassAnswer').val().trim();
+
+            if (question === "" || answer === "") {
+                alert("To add a question, it must have a question and answer");
+            } else {
+                var RUSURE = confirm("Are you sure you want to save this question?");
+                if (RUSURE === true) {
+            
+                $.post("/E-Learning/Teacher/Quiz/saveAssessment/", {
+                lessonName: name,
+                question: question,
+                answer: answer
+                }, function(response) {
+                if (response.result === "true") {
+                    if(event.target.id=="saveAss"||event.target.id=="addasslesson"){
+                        alert("Assessment question for " + name + " saved successfully");
+                        assessmentlesson(name);
+                    }
+                    else if(event.target.id=="saveAssnother"){
+                        alert("Assessment question for " + name + " saved successfully");
+                        addasslesson(name);
+                    }
+                } else {
+                    alert(response.result);
+                }
+                });
+                }
+            }
+}
+        function editasslesson(question){
+            
+            var form = $('#editasslesson').clone();
+            $('#lesson-list-container').empty();  
+            $('#lesson-list-container').append(form);
+            var lessonName = $('#title').text();
+            var name = $('<span>Assessment question for: </span><p id="editassName">'+lessonName+'</p>');
+            form.prepend(name);
+            var button = $('<input style="padding: 5px 10px;" type="button" onclick="assessmentlesson(\'' + lessonName + '\')" value="Back">');
+            var div = $('<div class="qbtn"></div>');
+            div.append(button);
+            form.append(div);
+            $.post("/E-Learning/Teacher/Assessment/editAssessment/", { question: question }, function(response) {
+                $('#editassQuestion').val(response.question);
+                $('#oldassQuestion').val(response.question);
+                var $textarea = $('#editassQuestion');
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                $('#editassAnswer').val(response.answer);
+                }, "json");
+            form.show();
+            
+        }
+        function saveeditAss(){
+            event.preventDefault();
+            var name = $('#title').text();
+            var oldquestion = $('#oldassQuestion').val();
+            var question = $('#editassQuestion').val().trim();
+            var answer = $('#editassAnswer').val().trim();
+            if(question==""||answer==""){
+                alert("To add a question, it must have a question and answer");
+            }
+            else{
+                var RUSURE = confirm("Are you sure you want to edit this question?");
+                if(RUSURE==true){
+                    $.post("/E-Learning/Teacher/Assessment/editAssessment/save/", {
+                    question: question,
+                    answer: answer,
+                    oldquestion: oldquestion
+                    }, function(response) {
+                    if (response.result == "true") {
+                    alert("Assessment question for " + name + " edited successfully");
+                    assessmentlesson(name);
+                    } else {
+                    alert(response.result);
+                        }
+                }, "json");
+                }
+            }
+        }
+        function deleteasslesson(question){
+            var lessonName = $('#title').text();
+            var originalQuestion = question.replace(/<br>/g, '\n').replace(/\\'/g, "'");
+            var RUSURE = confirm("Are you sure you want to delete this question?");
+            if(RUSURE==true){
+                $.post("/E-Learning/Teacher/Assessment/editAssessment/delete/", { question: originalQuestion }, function(response) {
+                alert(response.result);
+                assessmentlesson(lessonName);
+                }, "json");
+            }
+        }
+        function activityLog(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?act";
+            history.replaceState({}, document.title, updatedURL);
+            $('#lesson-list-container').empty();
+            var div = $('#activitylog').clone();
+            $('#title').text("ACTIVITY LOG");
+            $('#lesson-list-container').append(div); 
+            div.show();
+            $.get("/E-Learning/Teacher/ActivityLog/", function(response){
+                var tableBody = document.querySelector('#activitylog tbody');
+                tableBody.innerHTML = '';
+                $.each(response.username, function(index, user) {
+                    var row = tableBody.insertRow();
+                    var usernameCell = row.insertCell(0);
+                    var actionCell = row.insertCell(1);
+                    var lessonCell= row.insertCell(2);
+                    var dateCell = row.insertCell(3);
+                    var timeCell = row.insertCell(4);
+                    usernameCell.textContent = user;
+                    actionCell.textContent = response.action[index];
+                    lessonCell.textContent = response.lesson[index];
+                    dateCell.textContent = response.date[index];
+                    timeCell.textContent = response.time[index];
+                });
+                $.each(response.distinct, function(index, action) {
+                    $('#soaction').append($('<option>', {
+                        value: action,
+                        text: action}));
+                });
+            });
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').removeClass("click");
+            $('#divUser').removeClass("click");
+            $('#divAct').addClass("click");
+            dashboarDesign("act");
+            
+        }
+        function sortLog(sortBy){
+            var action = $('#soaction').val();
+            if(action==null){
+                action="all";
+            }
+            $('#startD').val("");
+            $('#endD').val("");
+            if(sortBy=="custom"){
+                $('#startL').show().text("Start Date:");
+                $('#startD').show();
+                $('#endL').show().text("End Date:");
+                $('#endD').show();
+            }
+            else if(sortBy=="all"){
+            $('#startL').hide();
+            $('#startD').hide();
+            $('#endL').hide();
+                $('#endD').hide();
+            $.get("/E-Learning/Teacher/ActivityLog/sort/?action="+action, function(response){
+                var tableBody = document.querySelector('#activitylog tbody');
+                tableBody.innerHTML = '';
+                $.each(response.username, function(index, user) {
+                    var row = tableBody.insertRow();
+                    var usernameCell = row.insertCell(0);
+                    var actionCell = row.insertCell(1);
+                    var lessonCell= row.insertCell(2);
+                    var dateCell = row.insertCell(3);
+                    var timeCell = row.insertCell(4);
+                    usernameCell.textContent = user;
+                    actionCell.textContent = response.action[index];
+                    lessonCell.textContent = response.lesson[index];
+                    dateCell.textContent = response.date[index];
+                    timeCell.textContent = response.time[index];
+                });
+            });
+            }
+            else{
+                $('#startL').show().text("Select Date:");
+                $('#startD').show();
+                $('#endL').hide().text("End Date:");
+                $('#endD').hide();
+            }
+            
+        }
+        function sort(event){
+            var s=$('#sodate').val();
+            if(s==null){
+                s="";
+            }
+            var action = $('#soaction').val();
+            if(action==null){
+                action="all";
+            }
+            var date=$('#startD').val();
+            if(date==null){
+                date="";
+            }
+            var date2=$('#endD').val();
+            if(date2==null){
+                date2="";
+            }
+            if(s=="custom" &&event.target.id=="startD"){
+                
+            }
+            else if(event.target.id=="soaction"){
+                
+                $.get("/E-Learning/Teacher/ActivityLog/sort/?sort="+s+"&start="+date+"&end="+date2+"&action="+action, function(response){
+                var tableBody = document.querySelector('#activitylog tbody');
+                tableBody.innerHTML = '';
+                $.each(response.username, function(index, user) {
+                    var row = tableBody.insertRow();
+                    var usernameCell = row.insertCell(0);
+                    var actionCell = row.insertCell(1);
+                    var lessonCell= row.insertCell(2);
+                    var dateCell = row.insertCell(3);
+                    var timeCell = row.insertCell(4);
+                    usernameCell.textContent = user;
+                    actionCell.textContent = response.action[index];
+                    lessonCell.textContent = response.lesson[index];
+                    dateCell.textContent = response.date[index];
+                    timeCell.textContent = response.time[index];
+                });
+            });
+            }
+            else if(s=="custom"){
+                var startDate = new Date(date);
+                var endDate = new Date(date2);
+                if(date==""|date2==""){
+                    alert("Select start and end date");
+                }
+                else if(startDate>endDate){
+                    alert("End date must be later than start date");
+                }
+                else{
+                    $.get("/E-Learning/Teacher/ActivityLog/sort/?sort="+s+"&start="+date+"&end="+date2+"&action="+action, function(response){
+                var tableBody = document.querySelector('#activitylog tbody');
+                tableBody.innerHTML = '';
+                $.each(response.username, function(index, user) {
+                    var row = tableBody.insertRow();
+                    var usernameCell = row.insertCell(0);
+                    var actionCell = row.insertCell(1);
+                    var lessonCell= row.insertCell(2);
+                    var dateCell = row.insertCell(3);
+                    var timeCell = row.insertCell(4);
+                    usernameCell.textContent = user;
+                    actionCell.textContent = response.action[index];
+                    lessonCell.textContent = response.lesson[index];
+                    dateCell.textContent = response.date[index];
+                    timeCell.textContent = response.time[index];
+                });
+            });
+                }
+            }
+            else{
+                if(date==""){
+                    alert("Select date");
+                }
+                else{ 
+                    $.get("/E-Learning/Teacher/ActivityLog/sort/?sort="+s+"&start="+date+"&action="+action, function(response){
+                    var tableBody = document.querySelector('#activitylog tbody');
+                    tableBody.innerHTML = '';
+                $.each(response.username, function(index, user) {
+                    var row = tableBody.insertRow();
+                    var usernameCell = row.insertCell(0);
+                    var actionCell = row.insertCell(1);
+                    var lessonCell= row.insertCell(2);
+                    var dateCell = row.insertCell(3);
+                    var timeCell = row.insertCell(4);
+                    usernameCell.textContent = user;
+                    actionCell.textContent = response.action[index];
+                    lessonCell.textContent = response.lesson[index];
+                    dateCell.textContent = response.date[index];
+                    timeCell.textContent = response.time[index];
+                });
+            });
+                }
+            }
+        }
+        function dashboarDesign(clicked){
+            if(clicked=="lessons"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book1.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divUser").find("img");
+                img.attr('src',"{% static 'images/user1.png' %}");
+                var img = $("#divAct").find("img");
+                img.attr('src',"{% static 'images/activity.png' %}");
+            }
+            else if(clicked=="quiz"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz1.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divUser").find("img");
+                img.attr('src',"{% static 'images/user1.png' %}");
+                var img = $("#divAct").find("img");
+                img.attr('src',"{% static 'images/activity.png' %}");
+            }
+            else if(clicked=="ass"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list1.png' %}");
+                var img = $("#divUser").find("img");
+                img.attr('src',"{% static 'images/user1.png' %}");
+                var img = $("#divAct").find("img");
+                img.attr('src',"{% static 'images/activity.png' %}");
+            }
+            else if(clicked=="user"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divUser").find("img");
+                img.attr('src',"{% static 'images/user2.png' %}");
+                var img = $("#divAct").find("img");
+                img.attr('src',"{% static 'images/activity.png' %}");
+            }
+            else if(clicked=="act"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divUser").find("img");
+                img.attr('src',"{% static 'images/user1.png' %}");
+                var img = $("#divAct").find("img");
+                img.attr('src',"{% static 'images/activity1.png' %}");
+            }
+        }
+        function adjustHeight(){
+            var $textarea = $(this);
+            $textarea.css('height', 'auto');
+            $textarea.height($textarea[0].scrollHeight);
+            var height = $textarea.height();
+            if (height < 200) {
+                    $textarea.css('height', '200px');
+                }
+            var cursorPosition = $(this).prop('selectionStart');
+            $('body, html').scrollTop(cursorPosition+ 20); 
+        }
+    </script>
+    
+</head>
+<body>
+    
+    <div id="navnav" class="navbar">
+        <img id="imgLOGO" src="{% static 'images/logo1.png' %}" width="50px" height="50px"/><h3 id="LOGO">CODELY</h3>
+            <a href="{% url 'out' %}" onclick="return log()" class="right"><img id="alis" src="{% static 'images/logout1.png' %}" width="25px" height="20px"/></a>
+            <a href="{% url 'teacherprofile' %}" class="right"><img id="usir" src="{% static 'images/user1.png' %}" width="25px" height="20px"/></a>
+            <a href="{% url 'teacherpage' %}" class="right"><img id="bahay" src="{% static 'images/home1.png' %}" width="25px" height="20px"/></a>
+        </div>
+     
+        <div class="dashboard">
+           
+            <h2>{{teacher.fname}} {{teacher.lname}}</h2>
+            <div id="divLessons" class="dcontent" onclick="lessons()"><img src="{% static 'images/book.png' %}" width="25px" height="20px"/>Lessons</div>
+            <div id="divUser" class="dcontent" onclick="users()"><img src="{% static 'images/user1.png' %}" width="25px" height="20px"/>Users</div>
+            <div id="divQuiz" class="dcontent" onclick="quiz()"><img src="{% static 'images/quiz.png' %}" width="25px" height="20px"/>Quiz</div>
+            <div id="divAss" class="dcontent" onclick="assessment()"><img src="{% static 'images/check-list.png' %}" width="25px" height="20px"/>Assessment</div>
+            <div id="divAct" class="dcontent" onclick="activityLog()"><img src="{% static 'images/activity.png' %}" width="25px" height="20px"/>Activity Log</div>
+            
+        </div>
+    
+        <div class="content">
+            <h1 id="title">Welcome {{teacher.username}}</h1>
+            <div id="lesson-list-container">
+                
+                                                <pre><h3>Welcome to CODELY - Empowering Java Education!</h3>
+                                                    Dear Administrators,
+                                    
+                                                    We extend a warm welcome to you as a crucial part of the CODELY community. 
+                                                As an administrator, you play a vital role in shaping the learning environment and 
+                                                ensuring a seamless experience for both students and instructors.
+                                                
+                                                Your dedication to maintaining the quality of education and fostering a supportive 
+                                                community is highly valued. Feel free to explore the admin dashboard, manage courses, 
+                                                monitor user engagement, and contribute to the continuous improvement of our platform.
+                                                
+                                                If you have any questions, concerns, or ideas for enhancement, our support team is 
+                                                here to assist you. Together, let's create an environment where students thrive, 
+                                                instructors excel, and Java programming knowledge is cultivated with excellence.
+                                        
+                                                Warm regards,
+                                                CODELY Team</pre>
+            </div>
+        </div>
+        <form id="lessonform" class="teacherContent" style="display: none;" onsubmit="savelesson()">
+            <span>Lesson Name:</span><br><input type="text" id="name" name="name" onkeyup="namecheck()" required><span id="namecheck"></span><br>
+            <span>Lesson Info:</span> <br><textarea onkeydown="adjustHeight.call(this)" name="info" id="info"  required></textarea><br>
+            <span>Lesson Exercise:</span> <br><textarea onkeydown="adjustHeight.call(this)" name="example" id="example" ></textarea><br>
+            <div class="grid-container">
+                <div>
+                    <span>Video:</span> <input type="file" name="video" id="video" accept="video/*">
+                </div>
+                <div>
+                    <span>File:</span> <input type="file" name="file" id="file" accept=".pdf, .ppt, .pptx, .doc, .docx">
+                </div>
+            </div>
+            
+                <input style="padding: 5px 10px;" type="button" id="lessonSave" onclick="savelesson(event)" value="Save">
+                <input style="padding: 5px 10px;" type="button" id="lessonSaveAnother" onclick="savelesson(event)" value="Save and Add another">
+            
+                <div class="qbtn"> <input style="padding: 5px 10px;" type="button" onclick="lessons()" value="Back"></div>
+            
+        </form>
+        <form id="editlessonform" class="teacherContent" style="display: none;">
+            <input style="display: none;" type="text" id="oldname" name="oldname">
+            <span>Lesson Name:</span><br><input type="text" id="editname" name="editname" required><br>
+            <span>Lesson Info:</span> <br><textarea onkeydown="adjustHeight.call(this)" name="editinfo" id="editinfo" cols="30" rows="10" required></textarea><br>
+            <span>Lesson Exercise:</span> <br><textarea onkeydown="adjustHeight.call(this)" name="editexample" id="editexample" cols="30" rows="10" required></textarea><br>
+            <div class="grid-container">
+                <div>
+                    <span>Video:</span> <input type="file" name="editvideo" id="editvideo" accept="video/*">
+           
+                </div>
+                <div>
+                    <span>File:</span> <input type="file" name="editfile" id="editfile" accept=".pdf, .ppt, .pptx, .doc, .docx">
+                </div>
+            </div>
+            <input style="padding: 5px 10px;" type="button" onclick="editsavelesson()" value="Save">
+            <input style="padding: 5px 10px;" type="button" onclick="editdeletelesson()" value="Delete">
+            <div class="qbtn"> <input style="padding: 5px 10px;" type="button" onclick="lessons()" value="Back"></div>
+        </form>
+        <form id="addquizlesson" class="editQuiz" style="display: none;" onsubmit="saveaddQuiz(event)">
+            Question: <br><textarea onkeydown="adjustHeight.call(this)" name="addquizQuestion" id="addquizQuestion"  required></textarea><br>
+            Answer: <input type="text" id="addquizAnswer" name="addquizAnswer" required><br>
+            <input style="padding: 5px 10px;" type="button" id="saveAdd" onclick="saveaddQuiz(event)" value="Save">
+            <input style="padding: 5px 10px;" type="button" id="saveAnother" onclick="saveaddQuiz(event)" value="Save and add another">
+            
+        </form>
+        <form id="addasslesson" class="editQuiz" style="display: none;" onsubmit="saveaddAss(event)">
+            Question: <br><textarea onkeydown="adjustHeight.call(this)" name="addassQuestion" id="addassQuestion"  required></textarea><br>
+            Answer: <input type="text" id="addassAnswer" name="addassAnswer" required><br>
+            <input style="padding: 5px 10px;" type="button" id="saveAss" onclick="saveaddAss(event)" value="Save">
+            <input style="padding: 5px 10px;" type="button" id="saveAssnother" onclick="saveaddAss(event)" value="Save and Add another">
+            
+        </form>
+        <form id="editquizlesson" class="editQuiz" style="display: none;" onsubmit="saveeditQuiz()">
+            <textarea style="display: none;" id="oldquizQuestion" name="oldquizQuestion" readonly></textarea>
+            Question: <br><textarea onkeydown="adjustHeight.call(this)" name="editquizQuestion" id="editquizQuestion"  required></textarea><br>
+            Answer: <input type="text" id="editquizAnswer" name="editquizAnswer" required><br>
+            <input style="padding: 5px 10px;" type="button" onclick="saveeditQuiz()" value="Save">
+            
+        </form>
+        <form id="editasslesson" class="editQuiz" style="display: none;" onsubmit="saveeditAss()">
+            <textarea style="display: none;" id="oldassQuestion" name="oldassQuestion"></textarea>
+            Question: <br><textarea onkeydown="adjustHeight.call(this)" name="editassQuestion" id="editassQuestion"  required></textarea><br>
+            Answer: <input type="text" id="editassAnswer" name="editassAnswer" required><br>
+            <input style="padding: 5px 10px;" type="button" onclick="saveeditAss()" value="Save">
+            
+        </form>
+        <div id="userInfo" class="userinfo">
+
+            <div style="display: flex; align-items: center; width: 100%;">
+                <img id="userPic" width="300" height="300" style="margin-right: 20px;">
+                <div id="userDetails" style="flex-grow: 1;">
+                    <h1>User Profile</h1>
+                    <div class="user-info-grid">
+                        <div>
+                            <span>First Name: </span>
+                            <h3 id="userFname"></h3>
+                        </div>
+                        <div>
+                            <span>Last Name: </span>
+                            <h3 id="userLname"></h3>
+                        </div>
+                        <div>
+                            <span>UserName: </span>
+                            <h3 id="userName"></h3>
+                        </div>
+                        <div>
+                            <span>Email: </span>
+                            <h3 id="userEmail"></h3>
+                        </div>
+                    </div>
+                    
+                    <button class="deleteUser" onclick="userDelete()">Delete User</button>
+                </div>
+            </div>
+        
+            <div id="userScores" style="text-align: center;">
+                <div id="Qscore" style="display: inline-block;text-align: left;">
+                <h2>QUIZ SCORES</h2>
+                </div>
+                <div id="Ascore" style="display: inline-block;text-align: left;">
+                    <h2>ASSESSMENT SCORES</h2>
+                </div>
+            </div>
+        <div class="qbtn">
+            <button onclick="users()">Back</button>
+        </div>
+        </div>
+        
+        <div id="activitylog"  style="display: none;">
+            <div class="activityLOG">
+            <div class="date">
+                <label class="select" for="sodate">Sort by Date:</label>
+                <select onchange="sortLog(this.value)" id="sodate" name="sodate">
+                    <option selected disabled>Select Date</option>
+                    <option value="all">All</option>
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                    <option value="year">Year</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <label class="select" for="soaction">Sort by Activity:</label>
+                <select onchange="sort(event)" id="soaction" name="soaction">
+                    <option selected disabled>Select Activity</option>
+                    <option value="all">All</option>
+                </select><br>
+            
+                <div class="dateContainer">
+                    <label id="startL" style="display: none;" for="startDate">Start Date:</label>
+                    <input onchange="sort(event)" id="startD" style="display: none;" type="date" id="startDate">
+                    <label id="endL" style="display: none;" for="endDate">End Date:</label>
+                    <input onchange="sort(event)" id="endD" style="display: none;" type="date" id="endDate">
+                </div>
+            </div>
+            
+            </div>
+            
+            <div class="tableLOG">
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Activity</th>
+                            <th>Lesson</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        
+</body>
+</html>

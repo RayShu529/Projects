@@ -1,0 +1,121 @@
+body{
+    margin: auto;
+}
+.topdiv{
+width:100%;
+height:fit-content;
+background-color:DarkRed;
+text-align:right;
+position:sticky;
+top:0px;
+}
+.topdiv button{
+    text-decoration: none;
+    color: darkorange;
+    padding: 5px 15px;
+    border: 15px solid;  
+    transition: 0.6s ease;
+    font-weight: bolder;
+}
+#image{
+
+    float: left;
+    height: 345px;
+}
+
+#container{
+
+    width: 60%;
+    height: 400px;
+    position: absolute;
+    top: 220px;
+    left: 250px;
+    border-radius: 40px;
+    
+
+}
+#loginForm{
+    padding-top: 40px;
+    float: right;
+    height: 320px;
+    border-radius: 40px;
+    width: 355px;   
+    background: rgb(45, 133, 33);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+     rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+}
+#user{
+    border-radius: 15px;
+    margin: 40px 40px 20px 40px;
+    width: 260px;
+    height: 35px;
+    font-size: 23px;
+    padding-left: 13px;
+    font-family:  Times, serif;
+    
+    }
+    
+ #password{
+        border-radius: 15px;
+        margin: 0px 40px 20px 40px;
+        width: 260px;
+        height: 35px;
+        font-size: 23px;
+        font-family:  Times, serif;
+        padding-left: 13px;
+        }
+
+#login{
+    
+    border-radius: 15px;
+    margin: 0px 40px 20px 49px;
+    font-family:  ' Times New Roman', Times, serif;
+    font-size: 23px;
+    background-color: rgb(218, 31, 31);
+    width: 260px;
+    height: 35px;
+    color: white;
+    }
+    #login:hover {
+        background-color: #ff2600;
+        box-shadow: 0px 15px 20px rgb(255, 38, 0);
+        color: #fff;
+        transform: translateY(-7px);
+      }
+      
+      #login:active {
+        transform: translateY(-1px);
+      }
+
+#ca{
+    width: 260px;
+    height: 35px;
+    font-size: 23px;
+    border-radius: 15px;
+    border: solid black 1px;
+    margin: 0px 40px 20px 49px;
+    background-color: white;
+    font-family:  Times, serif;
+}
+#ca:hover {
+    background-color: #28c936;
+    box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  #ca:active {
+    transform: translateY(-1px);
+  }
+#catxt{
+
+    color: black;
+    text-decoration: none;
+}
+
+#linktxt{
+text-decoration: none;
+color: White;
+}
+

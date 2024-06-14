@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'css/landingPageAssets/js/blk-design-system.min.js' %}" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script>
+        function submitForm(){
+            event.preventDefault();
+            var username = $('#username').val().trim();
+            $('#username').val(username);
+            var password = $('#password').val().trim();
+            $('#password').val(password);
+            var form = $('#loginform');
+            if(username==""||password==""){
+                alert("All fields are required!!!")
+                
+            }
+            else{
+                $.get("/E-Learning/logincheck/?username="+username+"&password="+password, function(response){
+					if(response.result!="true"){
+                        alert(response.result);
+                    }
+                    else{
+                        form.submit();
+                    }
+				});
+            } 
+        }
+        function togglePass1() {
+            var passwordInput1 = document.getElementById("password");
+            var eyeIcon1 = document.getElementById("eye-icon1");
+    
+            if (passwordInput1.type === "password") {
+                passwordInput1.type = "text";
+                eyeIcon1.src = "{% static 'images/show.png' %}";   // Replace with the path to your visible eye icon
+            } else {
+                passwordInput1.type = "password";
+                eyeIcon1.src = "{% static 'images/hide.png' %}";   // Replace with the path to your hidden eye icon
+            }
+        }
+    </script>
+</head>
+<body>
+    {% if message %}
+    <script>
+        alert("{{ message }}");
+    </script>
+    {% endif %}
+    <form id="loginform" action="{% url 'loginlog' %}" onsubmit="submitForm()">
+        Username/Email: <input type="text" id="username" name="username" class="form-control" required><br>
+        Password: <input type="password" id="password" name="password" class="form-control" required><img id="eye-icon1" onclick="togglePass1()" src="{% static 'images/hide.png' %}" width="15px" height="20px"><br>        
+        <button type="button" onclick="submitForm()" value="Login">Login</button><br>
+        <a href="{% url 'registerform' %}">Don't have an account? Register here</a>
+    </form>
+
+
+  
+</body>
+</html>

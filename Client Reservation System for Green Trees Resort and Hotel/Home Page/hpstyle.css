@@ -1,0 +1,228 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.div1{
+width:100%;
+height:auto;
+background: url("../GT pictures/bghome.jpg");
+background-repeat: no-repeat;
+background-size: cover;
+background-position: center; 
+background-repeat: no-repeat;
+background-attachment: fixed; 
+}
+.topdiv{
+width:100%;
+height:50px;
+background-color: rgb(9, 102, 29);
+text-align:right;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+rgba(0, 0.5, 0, 0.7) 0px -1px 0px inset;
+}
+
+#imageTop{
+
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin-top: 0px;
+    margin-left: 30px;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    
+}
+
+#pp{
+    padding: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 26px;
+    float: left;
+    color: white;
+    text-shadow: 0px 0px 15px rgb(3, 3, 3);
+    margin-top: 0px;
+    
+
+}
+.menu{
+    width: 40px;
+    height: auto;
+    position: absolute;
+    visibility: hidden;
+}
+.div2{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    
+}
+.div2 video{
+    width: 400px;
+    height: 300px;
+    
+}
+.div3{
+width:80%;
+height:auto;
+margin-left: 220px;
+
+display: inline-block;
+justify-content: center;
+align-items: center ;
+}
+.div3 img{
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 25px;
+margin-top: 25px;
+    
+}
+
+.div7{
+    width: 100%;
+    height: auto;
+    
+}
+#div4{
+    width: 80%;
+    height: 600px;
+    margin-left: 150px;
+    margin-bottom: 20px;
+    background-color: transparent;
+}
+.text{
+    font-size: 30px;
+    color: white;
+    padding: 5px 20px;
+    text-shadow: 5px 5px 20px rgba(0, 0, 0, 1);
+}
+span{
+font-family:Georgia;
+font-weight:bold;
+font-size:30px;
+background-color:white;
+
+}
+h1{
+padding: 30px 0;
+color:rgb(247, 247, 247);
+margin:50px;
+background-color:rgba(9, 102, 29, 0.637);
+text-align: center;
+font-size: 50px;
+border-radius: 30px;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+ rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+ text-shadow: 0px 0px 15px rgb(3, 3, 3);
+}
+.footer{
+padding:20px 0px;
+font-family:Georgia;
+font-weight:bold;
+font-size:15px;
+text-align:center;
+color:white;
+background-color: rgba(9, 102, 29, 0.637);
+text-shadow: 0px 0px 15px rgb(3, 3, 3);
+}
+
+.call{
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: rgb(175, 132, 68);
+}
+
+.bold{
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 35px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(9, 102, 29, 0.637);
+    padding-top: 10px;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+     rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    
+     
+}
+.footer p{
+    padding: 3px 0px;
+}
+img{
+width:250px;
+height:200px;
+transition: transform 0.5s ease;
+vertical-align: middle;
+border: solid rgb(233, 233, 233);
+
+box-shadow: rgba(0, 0, 0, 1) 0px 2px 4px, 
+rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+ rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+ text-shadow: 0px 0px 15px rgb(3, 3, 3);
+}
+img:hover {
+    border-color: #058610c4;
+    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+   }
+   
+   img:hover{
+    transform: translate(-50%, 50%);
+    opacity: 1;
+   }
+img:hover{
+    transform: scale(1.8);
+    
+        color: #07ff07;
+        box-shadow: 2px 2px 15px #07ff07 inset;
+      
+}
+#home, #contact,#account, #about, #rp {
+font-size:25px;
+color: White;
+border: 0px solid black;
+background-color: transparent;
+padding: 8px 10px;
+}
+#linktxt{
+text-decoration: none;
+color: White;
+}
+#home:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#contact:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#rp:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#about:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#account:hover{
+    background-color: #28c936;
+    color: #000;
+}
+@media only screen and (max-width:1024px){
+    #home, #contact, #account, #about, #rp{
+        position: absolute;
+        top: -50px;
+    }
+    .menu{
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}

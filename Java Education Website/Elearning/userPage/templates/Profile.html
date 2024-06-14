@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/NavStyle.css' %}" />
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/logout.js' %}"></script>
+    <title>Profile</title>
+    <script>
+        function togglePass(event) {
+            var eyeIcon = event.target.id;
+            var passwordInput;
+            if(eyeIcon==="eye-icon1"){
+                passwordInput = $('#oldpassword');
+            }
+            else if(eyeIcon==="eye-icon2"){
+                passwordInput = $('#newpassword');
+            }
+            else if(eyeIcon==="eye-icon3"){
+                passwordInput = $('#confirmpassword');
+            }
+            else if(eyeIcon==="piceye-icon"){
+                passwordInput = $('#picpassword');
+            }
+            else if(eyeIcon==="emaileye-icon"){
+                passwordInput = $('#emailpassword');
+            }
+            
+            if (passwordInput.prop('type') === "password") {
+                passwordInput.prop('type', 'text');
+                $("#" + eyeIcon).attr('src', "{% static 'images/show.png' %}");
+                } 
+            else {
+                passwordInput.prop('type', 'password');
+                $("#" + eyeIcon).attr('src', "{% static 'images/hide.png' %}");
+                }
+        }
+        function showForm(event) {
+            var button = event.target.id;
+            $("#Modal").empty();
+            
+            if(button=="showPassword"){
+                var form = $("#passwordform").clone().show();
+                $("#Modal").append(form);
+            }
+            else if(button=="showPicture"){
+                var form = $("#pictureform").clone().show();
+                $("#Modal").append(form);
+                
+            }
+            else if(button=="showEmail"){
+                var form = $("#emailform").clone().show();
+                $("#Modal").append(form);
+                
+                
+            }
+            $("#MOD").css('display','flex');
+        }
+        function cancel(){
+            $("#MOD").css('display','none');
+        }
+        function picturesubmit(){
+            event.preventDefault();
+            var form = $('#pictureform');
+            var picture = $("#picture");
+            var picpassword = $("#picpassword").val().trim();
+            $('#picpassword').val(picpassword);
+            if(picpassword==""||picture[0].files.length ===0){
+                alert("All fields are required!!")
+            }
+            else{
+                var userResponse = confirm("Are you sure you want to change profile picture?");
+                if(userResponse==true){
+                var file = picture[0].files[0];
+                var formData = new FormData();
+                
+                formData.append('password', picpassword);
+                formData.append('picture', file);
+                $.ajax({
+                    url: '/E-Learning/User/UserProfile/changepicture/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if(response.result=="true"){
+                            alert("Profile picture updated successfully");
+                            $('#picpassword').val("");
+                            $("#profilepic").attr("src",response.picture);
+                            cancel();
+                        }
+                        else{
+                            alert(response.result);
+                        }
+                    },
+                    error: function(error) {
+            
+                    }
+                });
+                }
+                
+            }
+        }
+        function passwordsubmit() {
+            event.preventDefault();
+            var form = $('#passwordform');
+            var oldpassword = $("#oldpassword").val().trim();
+            $('#oldpassword').val(oldpassword);
+
+            var newpassword = $("#newpassword").val().trim();
+            $('#newpassword').val(newpassword);
+
+            var confirmpassword = $("#confirmpassword").val().trim();
+            $('#confirmpassword').val(confirmpassword);
+            
+            var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:;"'<>,.?/\\[\]-]).{6,}$/;
+            if(oldpassword==""||newpassword==""||confirmpassword==""){
+                alert("All fields are required!!!");
+            }
+            else if (!passwordRegex.test(newpassword)) {
+                alert("Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character.");
+                
+            }
+            else if (newpassword !== confirmpassword) {
+                alert("Passwords do not match");
+            }
+            else if (newpassword == oldpassword) {
+                alert("New password must be different from the previous.");
+            }
+            else{
+                var userResponse = confirm("Are you sure you want to change password?");
+                if (userResponse == true) {
+                    $.get("/E-Learning/User/UserProfile/changepass/?password="+oldpassword+"&newpassword="+newpassword, function(response){
+                        if(response.result=="true"){
+                            alert("Pasword change successfully");
+                            $('#oldpassword').val("");
+                            $('#newpassword').val("");
+                            $('#confirmpassword').val("");
+                            cancel();
+                        }
+                        else{
+                            alert(response.result);
+                        }
+				        });
+                } 
+            }
+        }
+        
+        function emailsubmit() {
+            event.preventDefault();
+            var form = $('#emailform');
+            var password = $("#emailpassword").val().trim();
+            $('#emailpassword').val(password);
+            var email = $("#email").val().trim();
+            $('#email').val(email);
+            if(password==""||email==""){
+                alert("All fields are required!!!");
+            }
+            else if($('#EMAIL').text()===email){
+                alert("New email must be different from the previous");
+            }
+            else{
+                var userResponse = confirm("Are you sure you want to change email?");
+                if (userResponse == true) {
+                    $.get("/E-Learning/User/UserProfile/changeemail/?password="+password+"&email="+email, function(response){
+					if(response.result=="true"){
+                        alert("Email changed successfully");
+                        $('#EMAIL').text(response.email);
+                        $('#emailpassword').val("");
+                        $('#email').val("");
+                        cancel();
+                    }
+                    else{
+                        alert(response.result);
+                    }
+				});
+                
+                } 
+            }
+        }
+        function deleteAccount(){
+            var userResponse = confirm("Are you sure you want to delete your account?");
+            if (userResponse == true) {
+                var userResponse = confirm("All data related to your account will be gone and cannot be recovered, Are you sure?");
+                if (userResponse == true) {
+                    var password = prompt("Enter the password:");
+                    $.get("/E-Learning/User/UserProfile/deleteAccount/?password="+password, function(response){
+                        if(response.result=="true"){
+                            alert("Account deleted successfully");
+                            window.location.href = "/E-Learning/Login/";
+                        }
+                        else{
+                            alert(response.result);
+                        }
+				        });
+                }
+                }
+        }
+        function dashboard(dashboard){
+            if(dashboard=="lesson"){
+                window.location.href = "/E-Learning/User/Homepage/?lesson"; 
+            }
+            else if(dashboard=="quiz"){
+                window.location.href = "/E-Learning/User/Homepage/?quiz"; 
+            }
+            else if(dashboard=="ass"){
+                window.location.href = "/E-Learning/User/Homepage/?assess"; 
+            }
+            else if(dashboard=="score"){
+                window.location.href = "/E-Learning/User/Homepage/?score"; 
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+    var scrollContainer = document.getElementById("navnav");
+
+    window.addEventListener("scroll", function() {
+        if (window.scrollY <= 65) {
+            scrollContainer.classList.remove("color");
+            $('#LOGO').css('color','white');
+            $('#imgLOGO').attr('src',"{% static 'images/logo1.png' %}");
+            $('#alis').attr('src',"{% static 'images/logout1.png' %}");
+            $('#usir').attr('src',"{% static 'images/user1.png' %}");
+            $('#bahay').attr('src',"{% static 'images/home1.png' %}");
+           
+        } else {
+            scrollContainer.classList.add("color");
+            $('#LOGO').css('color','black');
+            $('#alis').attr('src',"{% static 'images/logout.png' %}");
+            $('#imgLOGO').attr('src',"{% static 'images/logo2.png' %}");
+            $('#usir').attr('src',"{% static 'images/user.png' %}");
+            $('#bahay').attr('src',"{% static 'images/home.png' %}");
+        }
+    });
+});
+    </script>
+</head>
+<body>
+    <div id="navnav" class="navbar">
+        <img id="imgLOGO" src="{% static 'images/logo1.png' %}" width="50px" height="50px"/><h3 id="LOGO">CODELY</h3>
+        <a href="{% url 'userout' %}" onclick = "return log()"class="right"><img id="alis" src="{% static 'images/logout1.png' %}" width="25px" height="20px"/></a>
+        <a href="{% url 'editprofile' %}" class="right"><img id="usir" src="{% static 'images/user1.png' %}" width="25px" height="20px"/></a>
+        <a href="{% url 'mainPage' %}" class="right"><img id="bahay" src="{% static 'images/home1.png' %}" width="25px" height="20px"/></a>
+    </div>
+    <div class="dashboard">
+           
+        <h2>{{user.fname}} {{user.lname}}</h2>
+            <div class="dcontent" onclick="dashboard('lesson')"><img src="{% static 'images/book.png' %}" width="25px" height="20px"/>Lessons</div>
+            <div class="dcontent" onclick="dashboard('quiz')"><img src="{% static 'images/quiz.png' %}" width="25px" height="20px"/>Quiz</div>
+            <div class="dcontent" onclick="dashboard('ass')"><img src="{% static 'images/check-list.png' %}" width="25px" height="20px"/>Assessment</div>
+            <div class="dcontent" onclick="dashboard('score')"><img src="{% static 'images/evaluation.png' %}" width="25px" height="20px"/>Scores</div>
+        
+    </div>
+    <div class="user-details-container">
+        <div id="userInfo" class="userinfo" style="display: flex;">
+            <div style="display: flex; align-items: center; width: 100%;">
+                
+                <div id="userDetails" style="flex-grow: 1;">
+                    <h1>User Profile</h1>
+                    <div class="user-info-grid">
+                        <div>
+                            <span>First Name: </span>
+                            <h3 id="userFname">{{ user.fname }}</h3>
+                        </div>
+                        <div>
+                            <span>Last Name: </span>
+                            <h3 id="userLname">{{ user.lname }}</h3>
+                        </div>
+                        <div>
+                            <span>UserName: </span>
+                            <h3 id="userName">{{ user.username }}
+                                {% if certified %}
+                                <img src="{% static 'images/logo.png' %}" width="30" height="30"/> 
+                                {% endif %}
+                            </h3>
+                        </div>
+                        <div>
+                            <span>Email: </span>
+                            <h3 id="EMAIL">{{ user.email }}</h3>
+                        </div>
+                        
+                    </div>
+                    
+            <button style="padding: 5px 10px;" id="showPassword" onclick="showForm(event)">Change Password</button>
+            <button style="padding: 5px 10px;" id="showEmail" onclick="showForm(event)">Change Email</button>
+            <button style="padding: 5px 10px;" id="showPicture" onclick="showForm(event)">Change Profile Picture</button>
+            <button style="padding: 5px 10px;" class="delButton" onclick="deleteAccount()">Delete Account</button>
+                </div>
+                {% if user.profilepic %}
+                <img id="profilepic" class="photo-avatar-of-user" src="{{ user.profilepic.url }}" alt="Profile Picture" width="300" height="300" style="margin-right: 20px;"/>
+            {% else %}
+                <img id="profilepic" class="photo-avatar-of-user" src="{% static 'images/user1.png' %}" alt="Default Profile Picture" width="300" height="300" style="margin-right: 20px;"/>
+            {% endif %}
+            </div>
+        
+    </div>
+</div>
+
+
+<div id="MOD" class="modal">
+    <div id="Modal" class="modal-content">
+        
+    </div>
+</div>
+<div style="display: none;">
+    <form class="profileFORM" id="passwordform" onsubmit="passwordsubmit()">
+        <h1>Change Password</h1>
+        <div> Old Password:</div> 
+        <div><input type="password" id="oldpassword" name="oldpassword" required>
+        <img id="eye-icon1" onclick="togglePass(event)" src="{% static 'images/hide.png' %}" width="15px" height="20px">
+        </div>
+        <div>New Password:</div>
+        <div><input type="password" id="newpassword" name="newpassword" minlength="6" required><img id="eye-icon2" onclick="togglePass(event)" src="{% static 'images/hide.png' %}" width="15px" height="20px"></div>
+       <div>Confirm New Password:</div>
+       <div><input type="password" id="confirmpassword" name="confirmpassword" required><img id="eye-icon3" onclick="togglePass(event)" src="{% static 'images/hide.png' %}" width="15px" height="20px"></div>
+       <div class="profileButton">
+       <button style="padding: 5px 10px;" type="button" onclick="passwordsubmit()">Change</button>
+        <button style="padding: 5px 10px;" type="button" onclick="cancel()">Cancel</button></div>
+    </form>
+    <form id="pictureform" class="profileFORM" onsubmit="picturesubmit()">
+        <h1>Change Profile Picture</h1>
+        <div>Picture:</div> 
+        <div><input type="file" id="picture" name="picture" accept=".jpg, .jpeg, .png" required></div>
+        <div>Password:</div> 
+        <div><input type="password" id="picpassword" name="picpassword" required><img id="piceye-icon" onclick="togglePass(event)" src="{% static 'images/hide.png' %}" width="15px" height="20px"></div>
+        <div class="profileButton"><button style="padding: 5px 10px;" type="button" onclick="picturesubmit()">Change</button>
+        <button style="padding: 5px 10px;" type="button" onclick="cancel()">Cancel</button></div>
+    </form>
+    <form id="emailform" class="profileFORM" onsubmit="emailsubmit()">
+        <h1>Change Email</h1>
+        <div>Email:</div> 
+        <div><input type="text" id="email" name="email" required></div>
+        <div>Password:</div> 
+        <div><input type="password" id="emailpassword" name="emailpassword" required><img id="emaileye-icon" onclick="togglePass(event)" src="{% static 'images/hide.png' %}" width="15px" height="20px"></div>
+        <div class="profileButton">
+        <button style="padding: 10px 10px;" type="button" onclick="emailsubmit()">Change</button>
+        <button style="padding: 10px 10px;" type="button" onclick="cancel()">Cancel</button></div>
+    </form>
+    </div>
+</body>
+</html>

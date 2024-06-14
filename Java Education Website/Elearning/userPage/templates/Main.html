@@ -1,0 +1,705 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/NavStyle.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/black-dashboard.css' %}" /> -->
+    <script src="{% static 'js/logout.js' %}"></script>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <title>Codely</title>
+    <script>
+        function showHoverMessage() {
+    var hoverMessage = $('#hover-message');
+    hoverMessage.css('display', 'block');
+    hoverMessage.css('left', event.clientX + 'px');
+    hoverMessage.css('top', event.clientY + 'px');
+    if(event.target.id=="failQuiz"){
+        hoverMessage.html('Click to retake quiz.');
+    }
+    else if(event.target.id=="failAss"){
+        hoverMessage.html('Click to retake assessment.');
+    }
+    $(document).one('click', hideHoverMessage);
+}
+
+
+    function hideHoverMessage() {
+        var hoverMessage = $('#hover-message');
+        hoverMessage.css('display', 'none');
+    }
+        $(document).ready(function() {
+            var currentURL = window.location.href;
+            if (currentURL.includes("lesson")) {
+                lessons();  
+            }
+            else if (currentURL.includes("quiz")) {
+                quiz();  
+            }
+            else if (currentURL.includes("assess")) {
+                assessment();  
+            }
+            else if (currentURL.includes("score")) {
+                score();  
+            }
+        });
+
+        function showlesson(lessonName){
+            $('#lesson-list-container').empty();  
+            var div = $('#showlesson').clone();
+            //var button = $('<input type="button" onclick="lessons()" value="Back"><br>');
+            $('#title').text(lessonName);
+            var quizbutt = $('<input type="button" onclick="showquiz(\'' + lessonName + '\')" value="Quiz" style="padding: 5px 10px;">');
+            var assbutt = $('<input type="button" onclick="showass(\'' + lessonName + '\')" value="Assessment" style="padding: 5px 10px;">');
+            var aqdiv = $('<div class="QandAdiv"></div>');
+            aqdiv.append(assbutt,quizbutt);
+            
+            $('#lesson-list-container').append(div); 
+            div.show();
+            $.get("/E-Learning/User/Lessons/getlesson/?lessoname="+lessonName, function(response){
+                if(response.result=="false"){
+                    alert(lessonName+" not available.");
+                    lessons();
+                }
+                else{
+                    var lessonData = JSON.parse(response.result)[0].fields;
+                $('#showinfo').text(lessonData.info);
+                $('#showexample').text(lessonData.example);
+                if(lessonData.multimedia){
+                    var video = $('<video>').attr({
+                    'src': "/" + lessonData.multimedia ,
+                    'controls': 'controls', 
+                    'width': '500',        
+                    'height': '500'        
+                    });
+                    $('#showlesson').append(video);
+                    $('#showlesson').append('<br>');
+                }
+                if(lessonData.file){
+                    var fileLink = $('<a>').attr('href',"/" + lessonData.file ).attr('target', '_blank').text('Download File');
+                    $('#showlesson').append(fileLink);
+                    $('#showlesson').append('<br>');
+                }
+                $('#showlesson').append(aqdiv); 
+                $('#showlesson').append('<button style="padding: 5px 10px;"id="loadiframe" onclick="loadiframe()">Try coding here</button> ');
+                
+                $('textarea').each(function() {
+                    var $textarea = $(this);
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                    });
+                }
+                $.get("/E-Learning/User/Lessons/log/?lessoname="+lessonName+"&action=Open Lesson", function(response){
+
+                });
+            });
+        }
+        function loadiframe(){
+            $('#loadiframe').remove();
+            $('#showlesson').append('<br>Try it here:<br>', $('#iframe').clone().show());
+        }
+        function showquiz(lessonName){
+            $('#lesson-list-container').empty();  
+            var form = $('#showform').clone();
+            //var button = $('<input type="button" onclick="quiz()" value="Back"><br>');
+            $('#title').text(lessonName);
+            $('#lesson-list-container').append(form); 
+            form.append('<div class="qbtn"> <input type="button" onclick="quiz()" value="Back" style="padding: 5px 10px;"></div>');
+            form.show();
+            $.get("/E-Learning/User/Quiz/getquiz/?lessoname="+lessonName, function(response){
+                if(response.result=="false"){
+                    alert(lessonName+" doesn't have enough questions.");
+                    quiz();
+                }
+                else{
+                    $('#question1').val(response.question[0]);
+                    $('#question2').val(response.question[1]);
+                    $('#question3').val(response.question[2]);
+                    $('#question4').val(response.question[3]);
+                    $('#question5').val(response.question[4]);
+                }
+                //form.append(button); 
+                $('textarea').each(function() {
+                    var $textarea = $(this);
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                    });
+
+                    form.on('submit', function() {
+                        submitQuiz();
+                        });
+                    $('#submitform').on('click', function() {
+                        submitQuiz();
+                        });
+                        
+            });
+        }
+        function showass(lessonName){
+            $('#lesson-list-container').empty(); 
+            var form = $('#showform').clone();
+            //var button = $('<input type="button" onclick="assessment()" value="Back"><br>');
+            $('#title').text(lessonName);
+            $('#lesson-list-container').append(form); 
+            form.append('<div class="qbtn"> <input type="button" onclick="assessment()" value="Back" style="padding: 5px 10px;"></div>');
+            form.show();
+            $.get("/E-Learning/User/Assessment/getass/?lessoname="+lessonName, function(response){
+                if(response.result=="false"){
+                    alert(lessonName+" doesn't have enough questions.");
+                    assessment();
+                }
+                else{
+                    $('#question1').val(response.question[0]);
+                    $('#question2').val(response.question[1]);
+                    $('#question3').val(response.question[2]);
+                    $('#question4').val(response.question[3]);
+                    $('#question5').val(response.question[4]);
+                }
+                //form.append(button); 
+                $('textarea').each(function() {
+                    var $textarea = $(this);
+                    $textarea.height(0); 
+                    var newHeight = $textarea[0].scrollHeight; 
+                    $textarea.height(newHeight); 
+                    });
+
+                    form.on('submit', function() {
+                        submitAss();
+                        });
+                    $('#submitform').on('click', function() {
+                        submitAss();
+                        });
+                        
+            });
+        }
+        function submitQuiz(){
+            event.preventDefault();
+            var lessonName = $('#title').text();
+            var answer1 = $('#answer1').val().trim();
+            var answer2 = $('#answer2').val().trim();
+            var answer3 = $('#answer3').val().trim();
+            var answer4 = $('#answer4').val().trim();
+            var answer5 = $('#answer5').val().trim();
+            if(answer1==""||answer2==""||answer3==""||answer4==""||answer5==""){
+                alert("All fields are required!!!");
+            }
+            else{
+                
+                var RUSURE = confirm("Are you sure you want to submit your answer? Your latest score will be saved.");
+                if(RUSURE==true){
+                    $.post("/E-Learning/User/Quiz/submitquiz/", {
+                    lessonName:lessonName,
+                    answer1:answer1,
+                    answer2:answer2,
+                    answer3:answer3,
+                    answer4:answer4,
+                    answer5:answer5,
+                    }, function(response) {
+                    alert("You have got "+response.result+"/5");
+                    quiz();
+                }, "json");
+                }
+            }
+        }
+        function submitAss(){
+            event.preventDefault();
+            var lessonName = $('#title').text();
+            var answer1 = $('#answer1').val().trim();
+            var answer2 = $('#answer2').val().trim();
+            var answer3 = $('#answer3').val().trim();
+            var answer4 = $('#answer4').val().trim();
+            var answer5 = $('#answer5').val().trim();
+            if(answer1==""||answer2==""||answer3==""||answer4==""||answer5==""){
+                alert("All fields are required!!!");
+            }
+            else{
+                
+                var RUSURE = confirm("Are you sure you want to submit your answer? Your latest score will be saved.");
+                if(RUSURE==true){
+                    $.post("/E-Learning/User/Assessment/submitass/", {
+                    lessonName:lessonName,
+                    answer1:answer1,
+                    answer2:answer2,
+                    answer3:answer3,
+                    answer4:answer4,
+                    answer5:answer5,
+                    }, function(response) {
+                    alert("You have got "+response.result+"/5");
+                    assessment();
+                }, "json");
+                }
+            }
+        }
+        function lessons(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?lesson";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('Lessons');
+            $.get("/E-Learning/User/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="showlesson(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                    var list2 = list.clone();
+                    $.each(list2.find('div'), function(index, divElement) {
+                    $(divElement).addClass('divDiv');
+                });
+                    $('#mini2').empty();
+                    $('#mini2').append(list2);
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);
+                          
+                }    
+                
+			});
+            $('#mini2').show();
+            $('#divLessons').addClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').removeClass("click");
+            $('#divScore').removeClass("click");
+            dashboarDesign("lessons");
+        }
+        function quiz(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?quiz";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('Quizzes');
+            $.get("/E-Learning/User/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="showquiz(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                   
+                    
+                    var list2 = list.clone();
+                    $.each(list2.find('div'), function(index, divElement) {
+                    $(divElement).addClass('divDiv');
+                });
+                    $('#mini2').empty();
+                    $('#mini2').append(list2);
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);   
+                }    
+                
+			});
+            $('#mini2').show();
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').addClass("click");
+            $('#divAss').removeClass("click");
+            $('#divScore').removeClass("click");
+            dashboarDesign("quiz");
+        }
+        function assessment(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?assess";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('Assessments');
+            $.get("/E-Learning/User/Lessons/", function(response){
+                $('#lesson-list-container').empty();
+                
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="showass(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                   
+                   
+                    var list2 = list.clone();
+                    $.each(list2.find('div'), function(index, divElement) {
+                    $(divElement).addClass('divDiv');
+                });
+                    $('#mini2').empty();
+                    $('#mini2').append(list2);
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);    
+                }    
+                
+			});
+            $('#mini2').show();
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').addClass("click");
+            $('#divScore').removeClass("click");
+            dashboarDesign("ass");
+        }
+        function score(){
+            var currentURL = window.location.href;
+            var updatedURL = currentURL.split("?")[0] + "?score";
+            history.replaceState({}, document.title, updatedURL);
+            $('#title').text('Scores');
+            $('#lesson-list-container').empty();
+            var div = $('#userScores').clone();
+            $('#lesson-list-container').append(div); 
+            div.show();
+            div.css('display','flex');
+            div.addClass('lessonContent')
+            /*$.get("/E-Learning/User/Lessons/", function(response){
+                
+               
+                if (response.result.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    var list = $('<div></div>');
+                    $.each(response.result, function(index, lessonName) {
+                        list.append($('<div onclick="showscore(\'' + lessonName + '\')"></div>').text(lessonName));
+                    });
+                   
+    
+                    var list2 = list.clone();
+                    $.each(list2.find('div'), function(index, divElement) {
+                    $(divElement).addClass('divDiv');
+                });
+                $('#mini2').empty();
+                    $('#mini2').append(list2);
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#lesson-list-container').append(list);
+                    var div = $('<div class="certificate"></div>');
+                    div.append($('<button onclick="cert()">Dowload Certificate</button>     '));
+                    div.append($('<button onclick="updatecert()">Update Certificate</button>'));
+                    $('#lesson-list-container').append(div);
+                }    
+                
+			});
+            $('#mini2').show();*/
+            
+            $.get("/E-Learning/User/scores/", function(response){
+                if (response.lessonList.length === 0) {
+                    var paragraph =$('<h3></h3>').text('No lessons available.');
+                    $('#lesson-list-container').append(paragraph);  
+                }
+                else{
+                    $('#mini2').hide();
+                    var list = $('<div></div>');
+                    $.each(response.quizScores, function(index, quiz) {
+                        if(quiz<3){
+                            var q = $('<div id="failQuiz" onclick="showquiz(\'' + response.lessonList[index] + '\')" onmouseover="showHoverMessage(event)" onmouseout="hideHoverMessage(event)" class = "fail"></div>').text(response.lessonList[index]+": "+quiz+"/5");
+                            
+                            list.append(q);
+                        }
+                        else{
+                            list.append($('<div class = "pass"></div>').text(response.lessonList[index]+": "+quiz+"/5"));
+                        }
+                        
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#Qscore').append(list);   
+                var list = $('<div></div>');
+                    $.each(response.assScores, function(index, ass) {
+                        if(ass<3){
+                            list.append($('<div id="failAss" onclick="showass(\'' + response.lessonList[index] + '\')" onmouseover="showHoverMessage(event)" onmouseout="hideHoverMessage(event)" class="fail"></div>').text(response.lessonList[index]+": "+ass+"/5"));
+                        }
+                        else{
+                            list.append($('<div class="pass"></div>').text(response.lessonList[index]+": "+ass+"/5"));
+                        }
+                    });
+                    list.css({
+                        'display': 'flex',
+                        'flex-wrap': 'wrap',
+
+                    });
+
+                    var items = list.children();
+                    items.css('width', '30%');
+                    items.addClass('lessonLIST')
+                    $('#Ascore').append(list);
+                    var div = $('<div class="certificate"></div>');
+                    div.append($('<button style="padding: 5px 10px;" onclick="cert()">Dowload Certificate</button>     '));
+                    div.append($('<button style="padding: 5px 10px;" onclick="updatecert()">Update Certificate</button>'));
+                    $('#lesson-list-container').append(div);  
+                }  
+            });
+
+            $('#divLessons').removeClass("click");
+            $('#divQuiz').removeClass("click");
+            $('#divAss').removeClass("click");
+            $('#divScore').addClass("click");
+            dashboarDesign("score");
+        }
+        function showscore(lessonName){
+            $('#lesson-list-container').empty();  
+            var div = $('<div class="scoreContent"></div>')
+            var div1 = $('<div></div>')
+            var div2 = $('<div></div>')
+            
+            $('#title').text(lessonName);
+            $('#lesson-list-container').append(div); 
+            $.get("/E-Learning/User/Score/getscores/?lessoname="+lessonName, function(response){
+                div1.append($('<h3>QUIZ</h3>'));
+                div1.append($('<p class="score"></p>').text("Score:"));
+                div1.append($('<h4 class="score"></h4>').text(response.quiz+"/5"));
+                div1.append($('<p class="score"></p>').text("Status:"));
+                if(response.quiz>=3){
+                div1.append($('<h4 class="score pass"></h4>').text("PASSED"));}
+                else{
+                    div1.append($('<h4 class="score fail"></h4>').text("FAILED"));
+                    div1.append($('<button style="padding: 5px 10px;" onclick="showquiz(\'' + lessonName + '\')">Retake Quiz</button>'));
+                }
+                div2.append($('<h3>ASSESSMENT</h3>'));
+                div2.append($('<p class="score"></p>').text("Score:"));
+                div2.append($('<h4 class="score"></h4>').text(response.ass+"/5"));
+                div2.append($('<p class="score"></p>').text("Status:"));
+                if(response.ass>=3){
+                div2.append($('<h4 class="score pass"></h4>').text("PASSED"));}
+                else{
+                    div2.append($('<h4 class="score fail"></h4>').text("FAILED"));
+                    div2.append($('<button style="padding: 5px 10px;" onclick="showass(\'' + lessonName + '\')">Retake Assessment</button><br>'));
+                }
+                var div3 = $('<div class="qbtn"> <input type="button" onclick="score()" value="Back" style="padding: 5px 10px;"></div>');
+                div.append(div1,div2,div3);
+            });
+        }
+        function cert(){    
+            $.get("/E-Learning/User/Certificate/", function(response){
+                if(response.result!="false"){
+                    window.open("/"+response.result, '_blank');
+                }
+                else{
+                    alert("Check your quiz and assessments, you need to pass all to download the certificate");
+                }
+            });
+        }
+        function updatecert(){    
+            var RUSURE = confirm("To update your certificate date, the system will erase all you quiz and assessment score and you will need to retake all quiz and assessment to get a new certificate");
+            if(RUSURE==true){
+                var password = prompt("Enter your password:");
+                $.get("/E-Learning/User/Certificate/update/?password="+password, function(response){
+                alert(response.result);
+            });
+            }
+            
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+    var scrollContainer = document.getElementById("navnav");
+
+    window.addEventListener("scroll", function() {
+        if (window.scrollY <= 65) {
+            scrollContainer.classList.remove("color");
+            $('#LOGO').css('color','white');
+            $('#imgLOGO').attr('src',"{% static 'images/logo1.png' %}");
+            $('#alis').attr('src',"{% static 'images/logout1.png' %}");
+            $('#usir').attr('src',"{% static 'images/user1.png' %}");
+            $('#bahay').attr('src',"{% static 'images/home1.png' %}");
+           
+        } else {
+            scrollContainer.classList.add("color");
+           $('#LOGO').css('color','white');
+            $('#imgLOGO').attr('src',"{% static 'images/logo1.png' %}");
+            $('#alis').attr('src',"{% static 'images/logout1.png' %}");
+            $('#usir').attr('src',"{% static 'images/user1.png' %}");
+            $('#bahay').attr('src',"{% static 'images/home1.png' %}");
+        }
+    });
+});
+        function dashboarDesign(clicked){
+            if(clicked=="lessons"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book1.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divScore").find("img");
+                img.attr('src',"{% static 'images/evaluation.png' %}");
+            }
+            else if(clicked=="quiz"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz1.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divScore").find("img");
+                img.attr('src',"{% static 'images/evaluation.png' %}");
+            }
+            else if(clicked=="ass"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list1.png' %}");
+                var img = $("#divScore").find("img");
+                img.attr('src',"{% static 'images/evaluation.png' %}");
+            }
+            else if(clicked=="score"){
+                var img = $("#divLessons").find("img");
+                img.attr('src',"{% static 'images/book.png' %}");
+                var img = $("#divQuiz").find("img");
+                img.attr('src',"{% static 'images/quiz.png' %}");
+                var img = $("#divAss").find("img");
+                img.attr('src',"{% static 'images/check-list.png' %}");
+                var img = $("#divScore").find("img");
+                img.attr('src',"{% static 'images/evaluation1.png' %}");
+            }
+        }
+    </script>
+    <style>
+        textarea {
+            width: 99%; 
+            border: none; 
+            resize: none;
+            line-height: 1.5; 
+            font-family: 'Roboto', sans-serif;
+            font-size: 20px;
+            background-color: transparent;
+            color: white;
+        }
+        #mini2{
+            font-size: 16px;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+    {% if alert_message %} 
+    <script>
+        alert("{{ alert_message }}");
+    </script>
+    {% endif %}
+    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+    <div id="navnav" class="navbar" style="padding-top: 10px;">
+        <img id="imgLOGO" src="{% static 'images/logo1.png' %}" width="50px" height="45px"/><h3 id="LOGO" style="padding-top: 2px;">CODELY</h3>
+        <a href="{% url 'userout' %}" onclick = "return log()"class="right"><img id="alis" src="{% static 'images/logout1.png' %}" width="25px" height="20px"/></a>
+        <a href="{% url 'editprofile' %}" class="right"><img id="usir" src="{% static 'images/user1.png' %}" width="25px" height="20px"/></a>
+        <a href="{% url 'mainPage' %}" class="right"><img id="bahay" src="{% static 'images/home1.png' %}" width="25px" height="20px"/></a>
+    </div>
+    </nav>
+    <div class="dashboard">
+        <h2>{{user.fname}} {{user.lname}} </h2>
+        <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+            <div id="divLessons" class="dcontent" onclick="lessons()"><img id ="dash-icon" src="{% static 'images/book.png' %}" width="25px" height="20px"/>LESSONS</div>
+            <div id="divQuiz" class="dcontent" onclick="quiz()"><img id ="dash-icon"src="{% static 'images/quiz.png' %}" width="25px" height="20px"/>QUIZ</div>
+            <div id="divAss" class="dcontent" onclick="assessment()"><img id ="dash-icon"src="{% static 'images/check-list.png' %}" width="25px" height="20px"/>ASSESSMENTS</div>
+            <div id="divScore" class="dcontent" onclick="score()"><img id ="dash-icon" src="{% static 'images/evaluation.png' %}" width="25px" height="20px"/>SCORES</div>
+        <div  id="mini2" class="mini2" style="display: none;"></div>
+    </div>
+    
+    <div class="content">
+        <h1 id="title">Welcome {{user.username}} 
+            {% if certified %}
+            <img src="{% static 'images/logo.png' %}" width="50" height="50"/> 
+            {% endif %}
+        </h1>
+
+        <div id="lesson-list-container" >
+                                        <pre id = "lesson-content"><h3>Welcome to CODELY - Your Gateway to Mastering Java!</h3>
+                                            Dear Students,
+
+                                                Congratulations on taking the first step towards becoming a proficient Java developer! 
+                                            We're thrilled to have you on board at CODELY, where we are committed to providing you 
+                                            with a top-notch learning experience.
+                                            
+                                            Our comprehensive Java courses are designed to take you from a novice to an expert 
+                                            programmer. Whether you're a beginner or looking to enhance your skills, our interactive 
+                                            lessons, hands-on projects, and expert instructors are here to guide you every step of the way.
+                                            
+                                            Get ready to dive into the world of Java programming, explore its nuances, and build 
+                                            real-world applications. Don't hesitate to ask questions, participate in discussions, 
+                                            and make the most of the resources available. Your journey towards Java mastery starts now!
+                                            
+                                            Best of luck, and happy coding!
+                                            CODELY Team</pre>
+        </div>
+    </div>
+    
+    <div id="showlesson" class="lessonContent" style="display: none;">
+        <textarea id="showinfo" wrap="soft"  readonly></textarea><br>
+        <textarea id="showexample" wrap="soft" readonly></textarea><br>
+        <div class="qbtn"> <input type="button" onclick="lessons()" value="Back" style="padding: 5px 10px;"></div>
+    </div>
+    <form id="showform" class="lessonContent" style="display: none;">
+        1.<textarea id="question1"   readonly></textarea><br>
+        <span>Answer:</span><input type="text" id="answer1" required><br>
+
+        2.<textarea id="question2"  readonly></textarea><br>
+        <span>Answer:</span><input type="text" id="answer2" required><br>
+
+        3.<textarea id="question3" readonly></textarea><br>
+        <span>Answer:</span><input type="text" id="answer3" required><br>
+
+        4.<textarea id="question4"   readonly></textarea><br>
+        <span>Answer:</span><input type="text" id="answer4" required><br>
+
+        5.<textarea id="question5"   readonly></textarea><br>
+        <span>Answer:</span><input type="text" id="answer5" required><br>
+        
+       <input type="button" id="submitform" value="Submit" style="padding: 5px 10px;">
+       
+    </form>
+    <iframe id="iframe" style="display: none; border-radius: 10px;" src="https://trinket.io/embed/java/f236a16f40?showInstructions=true" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+    <div id="userScores" style="text-align: center; display: none;flex-direction: column;">
+        <div id="Qscore" style="display: inline-block;flex:1;text-align: left;">
+        <h2>QUIZ SCORES</h2>
+        </div>
+        <div id="Ascore" style="display: inline-block;flex:1;text-align: left;">
+            <h2>ASSESSMENT SCORES</h2>
+        </div>
+    </div>
+    <div id="hover-message"></div>
+</body>
+</html>

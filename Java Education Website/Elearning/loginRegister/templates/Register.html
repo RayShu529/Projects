@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script>
+        function checkUsername(){
+            var username = $('#username').val().trim();
+            $('#username').val(username);
+                if(username==""){
+                    $('#usernamecheck').text("");
+                }
+                else{
+                    $.get("/E-Learning/usernamecheck/?username="+username, function(response){
+					if(response.result=="false"){
+                        $('#usernamecheck').text(username+" is not available");
+                    }
+                    else
+                    {
+                        $('#usernamecheck').text(username+" is available");
+                    }
+				});
+                }
+        }
+        function checkEmail(){
+            var email = $('#email').val().trim();
+            $('#email').val(email);
+                if(email!=""){
+                    $.get("/E-Learning/emailcheck/?email="+email, function(response){
+					if(response.result=="true"){
+                        $('#emailcheck').text("");
+                    }
+                    else
+                    {
+                        $('#emailcheck').text(response.result);
+                    }
+				});
+                }
+                else{
+                    $('#emailcheck').text("");
+                }
+                
+        }
+        function togglePass1() {
+            var passwordInput1 = document.getElementById("password");
+            var eyeIcon1 = document.getElementById("eye-icon1");
+    
+            if (passwordInput1.type === "password") {
+                passwordInput1.type = "text";
+                eyeIcon1.src = "{% static 'images/show.png' %}";  // Replace with the path to your visible eye icon
+            } else {
+                passwordInput1.type = "password";
+                eyeIcon1.src = "{% static 'images/hide.png' %}";   // Replace with the path to your hidden eye icon
+            }
+        }
+        function togglePass(){
+            var passwordInput2 = document.getElementById("confirmpassword");
+            var eyeIcon2 = document.getElementById("eye-icon2");
+            if (passwordInput2.type === "password") {
+                passwordInput2.type = "text";
+                eyeIcon2.src = "{% static 'images/show.png' %}";  // Replace with the path to your visible eye icon
+            } else {
+                passwordInput2.type = "password";
+                eyeIcon2.src = "{% static 'images/hide.png' %}";   // Replace with the path to your hidden eye icon
+            }
+        }
+        function validatePassword() {
+            var username = $('#username').val().trim();
+            var fname = $('#fname').val().trim();
+            var lname = $('#lname').val().trim();
+            var email = $('#email').val().trim();
+            var password = $('#password').val().trim();
+            var confirmPassword = $('#confirmpassword').val().trim();
+            var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:;"'<>,.?/\\[\]-]).{6,}$/;
+            var check = $('#usernamecheck').text();
+            var check2 = $('#emailcheck').text();
+            if(username==""||fname==""||lname==""||email==""||password==""||confirmPassword==""){
+                alert("All fields are required!!!");
+                $('#username').val(username);
+                $('#fname').val(fname);
+                $('#lname').val(lname);
+                $('#email').val(email);
+                $('#password').val(password);
+                $('#confirmpassword').val(confirmPassword);
+                return false;
+            }
+            else if (!passwordRegex.test(password)) {
+                alert("Password must contain at least one digit, one lowercase letter, one uppercase letter, and one special character.");
+                return false;
+            }
+            else if (password !== confirmPassword) {
+                alert("Passwords do not match");
+                return false;
+            }
+            else if(check ==username +" is not available"){
+                alert(username +" is not available");
+                return false;
+            }
+            else if(check2 =="Email is not in proper format"){
+                alert("Email is not in proper format");
+                return false;
+            }
+            else if(check2 =="Email is already taken"){
+                alert("Email is already taken");
+                return false;
+            }
+            else{
+                $('#register').prop('disabled', true);
+                return true;
+            }
+        }
+    </script>
+    
+</head>
+<body>
+    {% if error_message %}
+    <script>
+        alert("{{ error_message }}");
+    </script>
+{% endif %}
+
+    <form action="{% url 'registersave' %}" onsubmit="return validatePassword()">
+        
+        First Name: <input type="text" id = "fname" name="fname" required><br>
+        Last Name: <input type="text" id = "lname" name="lname" required><br>
+        Username: <input type="text" id="username" name="username" onkeyup="checkUsername()" required><span id="usernamecheck"></span><br>
+        Email: <input type="text" id = "email" name="email" onkeyup="checkEmail()" required><span id="emailcheck"></span><br>
+        Password: <input type="password" id="password" name="password" minlength="6" required><img id="eye-icon1" onclick="togglePass1()" src="{% static 'images/hide.png' %}" width="15px" height="20px"><br>
+        Confirm Password: <input type="password" id="confirmpassword" name="confirmpassword" required><img id="eye-icon2" onclick="togglePass()" src="{% static 'images/hide.png' %}" width="15px" height="20px"><br>
+        <input type="submit" id="register" value="Register"><br>                                                     
+        <a href="{% url 'loginform'%}">Already have an account? Login here</a>
+    </form>
+
+</body>
+</html>

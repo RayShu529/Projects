@@ -1,0 +1,62 @@
+
+stitle{
+	color:gold;							/* 2a */
+	font-size:40px;						/* 2b */
+	font-weight:bolder;					/* 2c */
+	text-align:center;					/* 2d */
+	display:block;						/* 1b */
+	margin-bottom:10px;					/* 5a */
+}
+
+
+hsneaker{
+	margin:auto; 						/* 1a */
+	display:block;						/* 1b */
+	width:50%;							/* 1c */
+	border:solid lightblue 5px;			/* 4a */
+	border-radius:30px;					/* 4c */
+	background-color: royalblue;		/* 4b */
+	font-size:20px;						/* 3c */
+	padding:10px 50px;					/* 5b and 5c */
+	margin-bottom:10px;					/* 5a */
+}
+
+brand, srp, cprice, rdate, collab{
+	display:block;					/* 3b */
+	margin-top:10px;					/* 5a */
+}
+pic{
+	display:none;	
+}
+
+sname{
+	display:block;
+	color:white;						/* 3a */
+	font-style:italic;
+	text-align:center;
+}
+hsneaker:nth-of-type(odd)
+{
+	border:solid royalblue 5px;			/* 4a */
+	background-color: lightblue;		/* 4b */
+}
+
+name:before{
+	content:"Name: "; 					/* 6a */
+}
+brand:before{
+	content:"Brand: ";
+}
+srp:before{
+	content:"Srp: ";
+}
+cprice:before{
+	content:"Current Price: ";
+}
+rdate:before{
+	content:"Release Date: ";
+}
+collab:before{
+	content:"Collaboration: ";
+}
+

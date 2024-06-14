@@ -1,0 +1,327 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.div1{
+width:100%;
+height:940px;
+background: url("../GT pictures/bghome.jpg");
+background-repeat: no-repeat;
+background-size: cover;
+background-position: center; 
+background-repeat: no-repeat;
+background-attachment: fixed; 
+}
+.topdiv{
+width:100%;
+height:50px;
+background-color: rgb(9, 102, 29);
+text-align:right;
+box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+}
+.menu{
+    width: 40px;
+    height: auto;
+    position: absolute;
+    visibility: hidden;
+}
+
+#imageTop{
+
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin-top: 0px;
+    margin-left: 30px;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: solid white;
+}
+
+#pp{
+    padding: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 26px;
+    float: left;
+    color: white;
+ text-shadow: 0px 0px 15px rgb(3, 3, 3);
+    margin-top: 0px;
+    
+
+}
+
+.linktxt{
+    text-decoration: none;
+    color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+    text-shadow: 5px 5px 40px rgb(42, 165, 11);
+}
+#container{
+
+    width: 90%;
+    height: 600px;
+    position: absolute;
+    top: 100px;
+    left: 65px;margin-top: 60px;
+    border-radius: 30px;
+    background-color: rgba(8, 97, 27, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+}
+
+#cUsername{
+
+    margin-top: 130px;
+    margin-left: 200px;
+    width: 20%;
+    height:30px;
+
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: rgba(36, 168, 65, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: none;
+    border-radius: 45px;
+   
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+
+}
+#cUsername:hover {
+    background-color: #28c936;
+    box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  #cUsername:active {
+    transform: translateY(-1px);
+  }
+#cContact{
+
+    margin-top: 80px;
+    margin-left: 200px;
+    width: 20%;
+    height:30px;
+
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: rgba(36, 168, 65, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: none;
+    border-radius: 45px;
+    
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    
+}
+#cContact:hover {
+    background-color: #28c936;
+    box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  #cContact:active {
+    transform: translateY(-1px);
+  }
+#change{
+    margin-top: 80px;
+    margin-left: 200px;
+    width: 20%;
+    height:30px;
+
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: rgba(36, 168, 65, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: none;
+    border-radius: 45px;
+    
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    
+            }
+
+            #change:hover {
+                background-color: #28c936;
+                box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+                color: #fff;
+                transform: translateY(-7px);
+              }
+              
+              #change:active {
+                transform: translateY(-1px);
+              }
+
+
+#reservations{
+  
+    position: absolute;
+    top: 130px;
+    right: 220px;
+    width: 20%;
+    height:30px;
+
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: rgba(36, 168, 65, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: none;
+    border-radius: 45px;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+}
+#reservations:hover {
+    background-color: #28c936;
+    box-shadow: 0px 15px 20px rgba(9, 255, 0, 0.534);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  #reservations:active {
+    transform: translateY(-1px);
+  }
+
+
+  #logout{
+    position: absolute;
+    top: 350px;
+    right: 225px;
+    width: 13%;
+    height:40px;
+    padding: 5px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 25px;
+    
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #000;
+    background-color: rgba(218, 17, 17, 0.829);
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, 
+    rgba(0, 0.5, 0, 0.6) 0px 7px 13px -3px,
+    rgba(0, 0.5, 0, 0.7) 0px -3px 0px inset;
+    border: solid black;
+    border: 2px;
+    border-radius: 45px;
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;  
+
+}
+#logout:hover {
+    background-color: #ff1e00;
+    box-shadow: 0px 15px 20px rgba(255, 0, 0, 0.795);
+    color: #fff;
+    transform: translateY(-7px);
+  }
+  
+  #logout:active {
+    transform: translateY(-1px);
+  }
+
+#imageTop:hover {
+    border-color: #058610c4;
+    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+   }
+   
+   #imageTop:hover{
+    transform: translate(-50%, 50%);
+    opacity: 1;
+   }
+#imageTop:hover{
+    transform: scale(1.8);
+    
+        color: #07ff07;
+        box-shadow: 2px 2px 15px #07ff07 inset;
+      
+}
+
+#home, #rp,#account,#contact, #about {
+font-size:25px;
+color: White;
+border: 0px solid black;
+background-color: transparent;
+padding: 8px 10px;
+}
+#linktxt{
+text-decoration: none;
+color: White;
+}
+#home:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#about:hover{
+    background-color: #28c936;
+    color: #000;
+}
+#home:hover{
+    background-color: #28c936;
+    color: #000;
+}
+
+#rp:hover{
+    background-color: #28c936;
+    color: #000;
+}
+
+#account:hover{
+    background-color: #28c936;
+    color: #000;
+}
+@media only screen and (max-width:1024px){
+    #home, #account, #rp,#account{
+        position: absolute;
+        top: -50px;
+    }
+    .menu{
+        visibility: visible;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}
+
+
+
+
+
+
+
+
+

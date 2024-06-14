@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:screenOrientation="portrait"
+
+    tools:context=".adminNotif.sendNotif">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="28dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/backbtn"></ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="65dp"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_horizontal"
+                android:text="Send Alert"
+                android:textColor="@color/black"
+                android:textSize="27dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="350dp"
+        android:layout_height="250dp"
+
+        android:gravity="center"
+        android:background="@drawable/form2"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp" >
+
+        <ImageView
+            android:id="@+id/img"
+            android:padding="10dp"
+            android:layout_width="340dp"
+            android:layout_height="240dp"
+
+            tools:srcCompat="@tools:sample/avatars" />
+    </LinearLayout>
+        <TextView
+            android:id="@+id/lat"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:padding="10dp"
+            android:text="Latitude: "
+            />
+        <TextView
+            android:id="@+id/lon"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:fontFamily="sans-serif-medium"
+            android:padding="10dp"
+            android:text="Longtitude: "
+            />
+        <Button
+            android:id="@+id/loc"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/buttondesign"
+            android:fontFamily="sans-serif-medium"
+            android:text="Select Location"
+            android:textSize="18dp" />
+
+        <EditText
+            android:id="@+id/ms"
+            android:layout_width="280dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/edittextdesign"
+            android:ems="10"
+            android:backgroundTint="@color/l2"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:maxLines="10"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="insideInset"
+            android:scrollbarSize="3dp"
+            android:scrollbarThumbVertical="@color/blgray"
+            android:scrollbarTrackVertical="@color/blgray"
+            android:hint="type a message"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black" />
+
+        <Button
+            android:id="@+id/se"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/buttondesign"
+            android:fontFamily="sans-serif-medium"
+            android:text="Send Alert"
+            android:textSize="18dp" />
+
+
+
+    </LinearLayout>
+</ScrollView>
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000" />
+
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loadingProgressBar"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"
+            android:text="Loading" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

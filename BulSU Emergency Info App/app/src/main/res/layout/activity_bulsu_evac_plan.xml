@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BulsuPlan.BulsuEvacPlan"
+    android:background="@color/white"
+    android:screenOrientation="portrait">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        android:background="@color/white"
+        tools:layout_editor_absoluteY="1dp">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/backbtn"></ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:elegantTextHeight="true"
+            android:fontFamily="sans-serif-black"
+            android:gravity="center_horizontal"
+            android:text="BulSU Evacuation Floor Plan"
+            android:textColor="@color/black"
+            android:textSize="27dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="360dp"
+            android:layout_height="260dp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/form2">
+        <ImageView
+            android:id="@+id/bulsuEvacPic"
+            android:layout_width="320dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            tools:srcCompat="@tools:sample/avatars"
+           />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Click the Image to zoom"
+                />
+    </LinearLayout>
+        <TextView
+            android:id="@+id/msg"
+            android:layout_width="300dp"
+            android:layout_gravity="center"
+            android:textAllCaps="true"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-medium"
+
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"/>
+        <Button
+            android:id="@+id/showDirection"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/buttondesign"
+            android:fontFamily="sans-serif-medium"
+            android:text="Show Direction"
+            android:textSize="18dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#77000000" />
+
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loadingProgressBar"
+            android:layout_centerHorizontal="true"
+            android:textSize="20dp"
+            android:text="Loading" />
+
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
